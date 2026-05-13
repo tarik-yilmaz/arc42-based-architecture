@@ -36,6 +36,11 @@ architects and development team must consider. These include
 
 -   relevant stakeholders and their expectations
 
+This document describes the architecture of a ride sharing application.
+The system provides an affordable and convenient transportation option
+for users while helping to reduce traffic congestion and emissions
+through shared rides.
+
 ## Requirements Overview
 
 <div class="formalpara-title">
@@ -74,6 +79,23 @@ document with potential redundancy w.r.t to requirements documents.
 See [Introduction and Goals](https://docs.arc42.org/section-1/) in the
 arc42 documentation.
 
+**Project-specific content**
+
+The ride sharing application connects users who need transportation with
+drivers who can offer rides. Its main purpose is to make ride booking,
+ride execution, and ride history transparent and easy to use for both
+customers and drivers.
+
+| Feature | Description |
+|---------|-------------|
+| Register account | Users and drivers can create an account and access the application. |
+| Search for rides | Users can search for available rides that match their travel needs. |
+| Book a ride | Users can request or book a ride. |
+| Accept or decline ride request | Drivers can accept or decline incoming ride requests. |
+| Track ride | Users and drivers can track the current ride status. |
+| Complete ride | Drivers and users can complete a ride once the trip has finished. |
+| View ride history | Users and drivers can view previously completed rides. |
+
 ## Quality Goals
 
 <div class="formalpara-title">
@@ -111,6 +133,17 @@ architect do not know how the quality of your work will be judged…
 </div>
 
 A table with quality goals and concrete scenarios, ordered by priorities
+
+**Project-specific content**
+
+The following quality goals are ordered by priority and drive the main
+architectural decisions.
+
+| Priority | Quality Goal | Motivation |
+|----------|--------------|------------|
+| 1 | Functional suitability | Price calculations must be correct, ride and map information must be complete, and the system communication between drivers and customers must work reliably. |
+| 2 | Usability | The application must be intuitive for users and drivers, because an easy-to-use platform helps win customers and supports fast growth. |
+| 3 | Scalability | The system must support flexible deployment and allow additional resources to be added when user numbers grow. |
 
 ## Stakeholders
 
@@ -157,6 +190,20 @@ to the architecture and its documentation.
 |-------------|----------------|--------------------|
 | *\<Role-1>* | *\<Contact-1>* | *\<Expectation-1>* |
 | *\<Role-2>* | *\<Contact-2>* | *\<Expectation-2>* |
+
+**Project-specific content**
+
+The following stakeholders influence the architecture and the required
+level of detail in this documentation.
+
+| Role/Name | Contact | Expectations |
+|-----------|---------|--------------|
+| Developer | - | Secure job prospects, earning potential, growth opportunities, and societal impact. |
+| Users | - | Ready-to-use application, affordable and convenient transportation, and a good user interface experience. |
+| Driver | - | Intuitive application, good price-to-earnings ratio, and a high number of ride requests. |
+| Company owner | - | Return on investment, personal growth, and societal and environmental impact. |
+| DevOps engineer | - | Easy-to-deploy architecture, secure rules, monitoring, and scaling options. |
+| Potential investors | - | Growth and scaling potential, and return on investment. |
 
 <div style="page-break-after: always;"></div>
 
@@ -365,6 +412,19 @@ in the following sections.
 
 See [Solution Strategy](https://docs.arc42.org/section-4/) in the arc42
 documentation.
+
+**Project-specific content**
+
+The following solution strategies form the cornerstones of the
+architecture and provide the basis for more detailed implementation
+decisions.
+
+| Goal/Requirement | Architectural Approach |
+|------------------|------------------------|
+| Quick go-to-market | Start with a monolithic architecture to enable quick and simple implementation. This provides a reliable starting point for a small team. |
+| Familiarity | Use Java for the enterprise application parts, Python for testing, MySQL as an independent database, and REST APIs for communication between system parts. |
+| Scalability | Use cloud services to benefit from a pay-per-use model and elastic resource scaling as demand grows. |
+| Reliability | Support reliability through extensive unit tests, regular stakeholder reviews, and penetration tests to improve security. |
 
 <div style="page-break-after: always;"></div>
 
@@ -909,6 +969,17 @@ Various options:
 See [Architecture Decisions](https://docs.arc42.org/section-9/) in the
 arc42 documentation. There you will find links and examples about ADR.
 
+**Project-specific content**
+
+The following decisions document the most important architecture choices
+that stakeholders must be able to understand and trace.
+
+| Problem | Considered Alternatives | Decision and Rationale |
+|---------|-------------------------|------------------------|
+| Cloud costs can grow strongly with high usage. | On-premises hosting. | Use cloud hosting initially because it avoids upfront infrastructure investment, is easy to scale, and only creates costs based on actual usage. |
+| A monolith can become too complex as the application grows. | Microservices. | Start with a monolith because it is easier to get going, deploy, and change quickly. This is suitable for a small team and startup context. |
+| Database support must be affordable and independent. | Microsoft SQL Server. | Use MySQL because it has no upfront license payment and avoids dependency on one large vendor. |
+
 <div style="page-break-after: always;"></div>
 
 # Quality Requirements
@@ -1062,6 +1133,17 @@ measures to minimize, mitigate or avoid risks or reduce technical debts.
 
 See [Risks and Technical Debt](https://docs.arc42.org/section-11/) in
 the arc42 documentation.
+
+**Project-specific content**
+
+The following risks and technical debts must be monitored during
+development and operation.
+
+| Risk/Technical Debt | Description | Suggested Measure |
+|---------------------|-------------|-------------------|
+| Monolithic architecture | As the code base grows, switching to a different architecture becomes more complex and difficult. A change may become necessary because of scalability or complexity. | Keep the monolith modular, define clear internal boundaries, and regularly evaluate whether parts of the system should be extracted later. |
+| Relying on cloud services | With rising user numbers, operating costs may increase significantly. An on-premises setup could become more cost-effective, but migration would require complex data migration. | Monitor cloud costs, define cost thresholds, and keep data export and migration options available. |
+| Growing test cases | A growing application can lead to many more test cases. This may require a dedicated testing suite including end-to-end tests to ensure maximum reliability. | Separate unit, integration, and end-to-end tests, automate them in the build pipeline, and keep the test suite maintainable. |
 
 <div style="page-break-after: always;"></div>
 
