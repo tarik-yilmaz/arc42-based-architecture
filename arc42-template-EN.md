@@ -778,18 +778,91 @@ There are many notations for describing scenarios, e.g.
 See [Runtime View](https://docs.arc42.org/section-6/) in the arc42
 documentation.
 
-## \<Runtime Scenario 1>
+**Project-specific content**
 
--   *\<insert runtime diagram or textual description of the scenario>*
+The following runtime scenarios describe the most relevant MVP workflows
+on architecture level. They focus on interactions between the building
+blocks from the building block view.
 
--   *\<insert description of the notable aspects of the interactions
-    between the building block instances depicted in this diagram.>*
+## Runtime Scenario 1: Customer Books a Ride with Automatic Driver Matching
 
-## \<Runtime Scenario 2>
+1. The customer enters pickup, destination, and desired time in the
+   youRide Mobile App / Frontend.
+2. The frontend sends the ride request to the backend monolith via the
+   Frontend REST API.
+3. Identity / Auth Integration validates the customer's authentication
+   token with the external authentication provider.
+4. Ride Management & Matching validates the request data and asks Driver
+   Management & Verification for verified and available drivers.
+5. Ride Management & Matching calculates the ride price and selects a
+   suitable driver automatically.
+6. Persistence stores the ride request, calculated price, selected
+   driver, and initial ride status.
+7. The backend returns the booking result to the frontend.
+8. The customer sees the calculated price, matched driver information,
+   and current ride status.
 
-## …
+Notable aspects:
 
-## \<Runtime Scenario n>
+-   The scenario supports `REQ_3`, `REQ_4`, and `REQ_5`.
+-   Authentication is external, but ride matching and price calculation
+    remain core youRide functionality.
+-   The ride is stored before later status changes are processed, so the
+    ride history and reporting data can be derived from persistent state.
+
+## Runtime Scenario 2: Driver Accepts Ride and Live Tracking Starts
+
+1. The driver receives the ride request in the youRide Mobile App /
+   Frontend.
+2. The driver accepts the ride request.
+3. The frontend sends the accept decision to the backend monolith via the
+   Frontend REST API.
+4. Identity / Auth Integration validates the driver's authentication
+   token.
+5. Ride Management & Matching checks that the ride is still open and
+   that the driver is allowed to accept it.
+6. Persistence stores the ride status as `accepted`.
+7. The frontend opens the live tracking channel to the backend via
+   WebSocket/TLS.
+8. Live Tracking receives driver GPS updates and distributes active ride
+   status and location information to the customer and driver frontend.
+9. When the ride starts, Ride Management & Matching changes the ride
+   status to `in progress` and Persistence stores the status change.
+
+Notable aspects:
+
+-   The scenario supports `REQ_6` and `REQ_7`.
+-   REST is used for the accept command, while WebSocket/TLS is used for
+    continuous live tracking updates.
+-   Ride status changes are persisted so that both customer and driver
+    see the same current state.
+
+## Runtime Scenario 3: Ride is Completed and Payment is Processed
+
+1. The driver or customer confirms that the ride has reached the
+   destination.
+2. The frontend sends the completion request to the backend monolith via
+   the Frontend REST API.
+3. Identity / Auth Integration validates the authenticated user.
+4. Ride Management & Matching checks that the ride is currently `in
+   progress` and can be completed.
+5. Payment Integration sends the payment request to Stripe with the ride
+   price and payment references.
+6. Stripe returns the payment status and transaction reference.
+7. Payment Integration stores the payment reference and result through
+   Persistence.
+8. Ride Management & Matching changes the ride status to `completed`.
+9. Persistence stores the completed ride, final status, and data needed
+   for ride history and controlling reports.
+10. The frontend shows the completed ride and payment result to customer
+    and driver.
+
+Notable aspects:
+
+-   The scenario supports `REQ_9`, `REQ_10`, and `BG_2`.
+-   Stripe is the only external payment system in the MVP.
+-   Payment result, ride status, and reporting data are persisted
+    together to support ride history and commission reporting.
 
 <div style="page-break-after: always;"></div>
 
