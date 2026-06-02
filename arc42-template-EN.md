@@ -1,4 +1,4 @@
-# 
+# youRide Architecture Documentation
 
 **About arc42**
 
@@ -36,10 +36,11 @@ architects and development team must consider. These include
 
 -   relevant stakeholders and their expectations
 
-This document describes the architecture of a ride sharing application.
-The system provides an affordable and convenient transportation option
-for users while helping to reduce traffic congestion and emissions
-through shared rides.
+This document describes the architecture of youRide, an Austrian ride
+sharing application created by a small startup team. The system provides
+an affordable and convenient transportation option while focusing on a
+lean MVP, fast market entry, paying customers, and cost-efficient
+operation.
 
 ## Requirements Overview
 
@@ -81,20 +82,60 @@ arc42 documentation.
 
 **Project-specific content**
 
-The ride sharing application connects users who need transportation with
-drivers who can offer rides. Its main purpose is to make ride booking,
-ride execution, and ride history transparent and easy to use for both
-customers and drivers.
+### Business Goals
 
-| Feature | Description |
-|---------|-------------|
-| Register account | Users and drivers can create an account and access the application. |
-| Search for rides | Users can search for available rides that match their travel needs. |
-| Book a ride | Users can request or book a ride. |
-| Accept or decline ride request | Drivers can accept or decline incoming ride requests. |
-| Track ride | Users and drivers can track the current ride status. |
-| Complete ride | Drivers and users can complete a ride once the trip has finished. |
-| View ride history | Users and drivers can view previously completed rides. |
+youRide connects customers who need transportation with private or
+professional drivers who can offer rides. The application starts in
+Austria and positions itself as a local and cheaper alternative to large
+international ride sharing providers.
+
+The main business goal is to gain paying customers as quickly as
+possible and become profitable with low operating costs. Future investor
+interest is expected to follow from growth in active customers, active
+drivers, completed rides, and controlled infrastructure costs. The
+business model for the MVP is based on commissions per completed ride;
+additional revenue streams are not part of the initial scope.
+
+| ID | Business Goal | Description |
+|----|---------------|-------------|
+| BG_1 | Fast market entry | Build a useful MVP quickly in order to validate the Austrian market. |
+| BG_2 | Paying customers | Win active customers and drivers and generate revenue through commissions per completed ride. |
+| BG_3 | Low operating costs | Keep infrastructure and tool costs low because the founders provide and acquire the initial capital themselves. |
+| BG_4 | Local alternative | Offer an Austrian ride sharing alternative that is cheaper than large international providers. |
+| BG_5 | Measurable growth | Track active customers, active drivers, completed rides, and operating costs as main success indicators. |
+
+### Functional Requirements Overview
+
+The MVP supports spontaneous ride booking as well as planned shared
+rides for a later time. Customers and drivers use separate account types,
+because both groups have different workflows and data requirements.
+
+| ID | Essential Feature | Description |
+|----|-------------------|-------------|
+| REQ_1 | Register account | Customers and drivers can create separate accounts and access the application. |
+| REQ_2 | Verify driver | The company can verify drivers before they offer rides on the platform. |
+| REQ_3 | Search for rides | Customers can search for available spontaneous or planned rides that match their travel needs. |
+| REQ_4 | Book a ride | Customers can request or book a ride and receive a calculated ride price before the ride starts. |
+| REQ_5 | Match driver automatically | The system automatically matches a suitable driver to a customer request. |
+| REQ_6 | Accept or decline ride request | Drivers can accept or decline incoming ride requests. |
+| REQ_7 | Track ride | Customers and drivers can track the ride with live GPS on a map and the status values requested, accepted, in progress, completed, or cancelled. |
+| REQ_8 | Cancel ride | Customers and drivers can cancel a ride before completion. |
+| REQ_9 | Complete ride | Drivers and customers can complete a ride once the trip has finished. |
+| REQ_10 | View ride history | Customers and drivers can view previously completed or cancelled rides. |
+| REQ_11 | Administer MVP | The founding team can review users, verify drivers, inspect rides, and access basic operational data. |
+
+### Requirements Sources
+
+The requirements overview is based on the existing project documents in
+the `ridesharing` folder. The table above summarizes the most important
+requirements for architecture work; detailed use-case descriptions remain
+in the referenced documents.
+
+| Document | Purpose |
+|----------|---------|
+| `ridesharing/brd.md` | Business goals, scope, functional requirements, non-functional requirements, assumptions, and constraints. |
+| `ridesharing/use-case-document.md` | Actors, use cases, preconditions, postconditions, and user interactions for the MVP. |
+| `ridesharing/investor-interview.md` | Investor expectations, market opportunity, return expectations, and business risks. |
 
 ## Quality Goals
 
@@ -139,11 +180,11 @@ A table with quality goals and concrete scenarios, ordered by priorities
 The following quality goals are ordered by priority and drive the main
 architectural decisions.
 
-| Priority | Quality Goal | Motivation |
-|----------|--------------|------------|
-| 1 | Functional suitability | Price calculations must be correct, ride and map information must be complete, and the system communication between drivers and customers must work reliably. |
-| 2 | Usability | The application must be intuitive for users and drivers, because an easy-to-use platform helps win customers and supports fast growth. |
-| 3 | Scalability | The system must support flexible deployment and allow additional resources to be added when user numbers grow. |
+| Priority | Quality Goal | Motivation | Concrete Scenario |
+|----------|--------------|------------|-------------------|
+| 1 | Functional suitability | Price calculations, driver matching, ride data, location data, ride status changes, and communication between drivers and customers must work correctly and reliably. | When a customer books a ride, the system calculates a price, assigns a suitable driver, stores the ride, and shows the same ride status to customer and driver. |
+| 2 | Usability | The application must be intuitive and usable without documentation for customers and drivers, because an easy-to-use platform helps win early users and supports fast startup growth. | A new customer can register, search for a ride, see the price, and request the ride without reading external instructions. |
+| 3 | Scalability | The system must support growth in active customers, active drivers, completed rides, and later cloud usage, without creating high initial infrastructure costs. | When demand grows beyond the rented Linux server, the architecture allows migration of selected infrastructure parts to cloud services while keeping the server available for backup. |
 
 ## Stakeholders
 
@@ -198,12 +239,11 @@ level of detail in this documentation.
 
 | Role/Name | Contact | Expectations |
 |-----------|---------|--------------|
-| Developer | - | Secure job prospects, earning potential, growth opportunities, and societal impact. |
-| Users | - | Ready-to-use application, affordable and convenient transportation, and a good user interface experience. |
-| Driver | - | Intuitive application, good price-to-earnings ratio, and a high number of ride requests. |
-| Company owner | - | Return on investment, personal growth, and societal and environmental impact. |
-| DevOps engineer | - | Easy-to-deploy architecture, secure rules, monitoring, and scaling options. |
-| Potential investors | - | Growth and scaling potential, and return on investment. |
+| Entrepreneurs / developers | Founding team | A cost-efficient MVP, fast implementation, simple deployment, low operating costs, and an architecture that can later be scaled and split into microservices if growth requires it. |
+| Customers | - | Affordable and convenient transportation, simple ride booking for immediate or planned rides, transparent prices, live ride status, and a good user interface experience. |
+| Drivers | - | Intuitive application, clear ride requests, reliable customer communication, live ride status, and a good price-to-earnings ratio. |
+| DevOps / network employee | Internal employee | Reliable deployment, stable server and network operation, monitoring, backups, and a technical setup that can later integrate cloud services. |
+| Controlling employee | Internal employee | Cost overview, revenue data, ride-based commission reporting, and basic operational reporting for business decisions. |
 
 <div style="page-break-after: always;"></div>
 
@@ -243,6 +283,22 @@ documentation or naming conventions)
 
 See [Architecture Constraints](https://docs.arc42.org/section-2/) in the
 arc42 documentation.
+
+**Project-specific content**
+
+The following constraints limit the architectural freedom for the first
+release of youRide.
+
+| ID | Type | Constraint | Background and Motivation |
+|----|------|------------|---------------------------|
+| C_1 | Budget / operational | The initial production system runs on a rented Linux server. | This keeps fixed infrastructure costs low for the startup. When user numbers grow, cloud services can be added for scaling, while the rented server remains available for backup purposes. |
+| C_2 | Budget | Recurring infrastructure and tool costs must be kept as low as reasonably possible. | The founders provide and acquire the initial capital themselves, so the architecture must support a lean MVP and avoid unnecessary paid services. |
+| C_3 | Organizational | The initial company team consists of three entrepreneurs/developers, one DevOps/network employee, and one controlling employee. | The architecture, deployment process, and operational model must be simple enough for a small team to build and maintain. |
+| C_4 | Compliance | Data governance is based on GDPR. | Customer profiles, driver profiles, ride data, and location data are personal data. Privacy, security, retention, and access decisions must respect GDPR principles. |
+
+The chosen technologies, such as Java, Angular, MySQL, and REST APIs,
+are current architecture decisions and not externally mandated
+constraints.
 
 <div style="page-break-after: always;"></div>
 
