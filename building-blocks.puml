@@ -1,0 +1,28 @@
+@startuml
+title RideShare - Building Block View Level 1
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+actor Passenger
+actor Driver
+
+component "RideShare Mobile App\nFrontend: Angular" as App
+component "RideShare Backend\nJava Monolith" as Backend
+database "MySQL Database" as DB
+
+component "Payment Processor" as PaymentProcessor
+component "Maps / GPS API" as MapsAPI
+component "Notification Service" as NotificationService
+
+Passenger --> App : uses
+Driver --> App : uses
+
+App --> Backend : REST API
+
+Backend --> DB : stores and reads data
+Backend --> PaymentProcessor : processes payments
+Backend --> MapsAPI : gets location and route data
+Backend --> NotificationService : sends notifications
+
+@enduml
