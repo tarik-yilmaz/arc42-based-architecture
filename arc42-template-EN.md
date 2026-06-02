@@ -348,6 +348,15 @@ Various options:
 See [Context and Scope](https://docs.arc42.org/section-3/) in the arc42
 documentation.
 
+**Project-specific content**
+
+For this documentation, the youRide system boundary includes the mobile
+app/frontend, the backend monolith, the MySQL database, and the admin
+functions used by the founding team. External systems are limited to an
+external authentication provider and the payment provider Stripe in the
+MVP. Maps, ride matching, live tracking, notifications, reporting, and
+administration are treated as youRide functionality.
+
 ## Business Context
 
 <div class="formalpara-title">
@@ -383,9 +392,23 @@ Alternatively (or additionally) you can use a table. The title of the
 table is the name of your system, the three columns contain the name of
 the communication partner, the inputs, and the outputs.
 
-**\<Diagram or Table>**
+**Project-specific content**
 
-**\<optionally: Explanation of external domain interfaces>**
+The following table shows youRide as a black box and lists the external
+communication partners and the domain-specific information exchanged
+with them.
+
+| Communication Partner | Input to youRide | Output from youRide |
+|-----------------------|------------------|---------------------|
+| Customers | Registration data, login requests, pickup and destination, ride search criteria, booking requests, cancellation requests, live location data, ride completion confirmation. | Available rides or matched driver, calculated price, booking confirmation, ride status, live ride location, ride history. |
+| Drivers | Registration data, login requests, driver verification data, ride availability, accept or decline decisions, live location data, cancellation requests, ride completion confirmation. | Ride requests, customer pickup and destination, calculated ride information, ride status, customer communication, ride history. |
+| Founding team / administrators | Driver verification decisions, user review actions, ride inspection requests, operational corrections. | User overview, driver verification status, ride overview, basic operational data. |
+| Controlling employee | Reporting requests and cost or revenue analysis requests. | Ride-based commission data, revenue data, cost overview, and basic operational reports. |
+| External authentication provider | Registration and login requests, identity verification requests. | Authentication result, user identity information, and authentication tokens. |
+| Stripe payment provider | Payment request, ride price, payer and payee references, payment confirmation request. | Payment status, transaction reference, and payment confirmation or failure information. |
+
+There are no additional external business partners such as authorities,
+insurance providers, or transportation agencies in the MVP scope.
 
 ## Technical Context
 
@@ -420,11 +443,36 @@ E.g. UML deployment diagram describing channels to neighboring systems,
 together with a mapping table showing the relationships between channels
 and input/output.
 
-**\<Diagram or Table>**
+**Project-specific content**
 
-**\<optionally: Explanation of technical interfaces>**
+The MVP uses simple and well-known technical interfaces to keep
+implementation and operation manageable for the small team. Normal app
+operations use HTTPS/REST. Live ride tracking uses WebSocket
+communication because both driver and customer need timely location and
+status updates during an active ride.
 
-**\<Mapping Input/Output to Channels>**
+| Technical Interface | Communication Partner / Target | Channel / Protocol | Purpose |
+|---------------------|--------------------------------|--------------------|---------|
+| Mobile app to backend | youRide backend monolith | HTTPS/REST over public internet | Registration, login handoff, ride search, booking, cancellation, ride completion, ride history, and admin-related requests. |
+| Live tracking channel | youRide backend monolith | WebSocket over TLS | Driver and customer live location updates and ride status changes during an active ride. |
+| Backend to database | MySQL database | Internal database connection on the rented Linux server or private network | Store and read customer profiles, driver profiles, rides, ride status, prices, payment references, and reporting data. |
+| Backend to authentication provider | External authentication provider | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect | Register users, authenticate users, and validate identity information. |
+| Backend to Stripe | Stripe payment provider | HTTPS / Stripe API | Process payments, retrieve payment status, and store payment references for ride commissions. |
+| DevOps access | Rented Linux server | Secure administrative access, e.g. SSH via restricted network access | Deployment, monitoring, backup handling, and operational maintenance. |
+
+The detailed physical deployment of the rented server, database,
+networking, backup, and later cloud migration path is described in the
+deployment view.
+
+**Mapping Input/Output to Channels**
+
+| Domain Input/Output | Technical Channel |
+|---------------------|-------------------|
+| Registration, ride search, booking, cancellation, completion, ride history | Mobile app to backend via HTTPS/REST. |
+| Live GPS location and active ride status | WebSocket over TLS between mobile app and backend. |
+| Authentication result and user identity | Backend to external authentication provider via HTTPS. |
+| Payment request, payment confirmation, transaction reference | Backend to Stripe via HTTPS / Stripe API. |
+| Stored customer, driver, ride, price, payment, and reporting data | Backend to MySQL via internal database connection. |
 
 <div style="page-break-after: always;"></div>
 
