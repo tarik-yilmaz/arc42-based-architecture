@@ -621,77 +621,45 @@ following white box template. It contains
     necessary compatibilities and many things more. In the best case you
     will get away with examples or simple signatures.
 
-***\<Overview Diagram>***
+**Project-specific content**
 
-Motivation  
-*\<text explanation>*
+### Overview Diagram
 
-Contained Building Blocks  
-*\<Description of contained building block (black boxes)>*
+The Level 1 overview diagram is maintained in `building-blocks.puml`.
+It shows youRide as a complete system with mobile app/frontend, backend
+monolith, database, and the two external providers for authentication
+and payment.
 
-Important Interfaces  
-*\<Description of important interfaces>*
+### Motivation
 
-Insert your explanations of black boxes from level 1:
+The decomposition follows the selected modular monolith strategy. The
+mobile app/frontend is separated from the backend so that user
+interaction stays independent from business logic. The backend monolith
+contains the core business capabilities and is deployed as one
+application to keep operation simple for the startup. MySQL is separated
+as the persistent data store. Authentication and payment are delegated
+to external providers because they are security-critical and costly to
+implement from scratch.
 
-If you use tabular form you will only describe your black boxes with
-name and responsibility according to the following schema:
+### Contained Building Blocks and Important External Systems
 
-| **Name**         | **Responsibility** |
-|------------------|--------------------|
-| *\<black box 1>* |  *\<Text>*         |
-| *\<black box 2>* |  *\<Text>*         |
+| Name | Type | Responsibility | Interfaces | Fulfilled Requirements |
+|------|------|----------------|------------|------------------------|
+| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith. | `REQ_1`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
+| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to external providers, internal database connection to MySQL. | `REQ_1` to `REQ_11` |
+| MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | `REQ_1`, `REQ_2`, `REQ_4`, `REQ_7`, `REQ_10`, `REQ_11` |
+| External Auth Provider | External system | Handles registration, login, authentication, and token issuing for customer, driver, and internal users. | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect. | `REQ_1` |
+| Stripe Payment Provider | External system | Processes ride payments and returns payment status and transaction references. | HTTPS / Stripe API. | `REQ_4`, `BG_2` |
 
-If you use a list of black box descriptions then you fill in a separate
-black box template for every important building block . Its headline is
-the name of the black box.
+### Important Interfaces
 
-### \<Name black box 1>
-
-Here you describe \<black box 1> according the the following black box
-template:
-
--   Purpose/Responsibility
-
--   Interface(s), when they are not extracted as separate paragraphs.
-    This interfaces may include qualities and performance
-    characteristics.
-
--   (Optional) Quality-/Performance characteristics of the black box,
-    e.g.availability, run time behavior, ….
-
--   (Optional) directory/file location
-
--   (Optional) Fulfilled requirements (if you need traceability to
-    requirements).
-
--   (Optional) Open issues/problems/risks
-
-*\<Purpose/Responsibility>*
-
-*\<Interface(s)>*
-
-*\<(Optional) Quality/Performance Characteristics>*
-
-*\<(Optional) Directory/File Location>*
-
-*\<(Optional) Fulfilled Requirements>*
-
-*\<(optional) Open Issues/Problems/Risks>*
-
-### \<Name black box 2>
-
-*\<black box template>*
-
-### \<Name black box n>
-
-*\<black box template>*
-
-### \<Name interface 1>
-
-…
-
-### \<Name interface m>
+| Interface | Description |
+|-----------|-------------|
+| Frontend REST API | Main interface for registration handoff, ride search, booking, cancellation, completion, ride history, administration, and reporting requests. |
+| Live Tracking Channel | WebSocket/TLS channel for active ride status and live GPS updates between frontend and backend. |
+| Authentication Provider API | External interface used by the backend to validate user identity and authentication tokens. |
+| Stripe API | External payment interface used by the backend to process ride payments and store payment references. |
+| Database Access | Internal persistence interface between backend monolith and MySQL. |
 
 ## Level 2
 
@@ -704,21 +672,33 @@ over completeness. Specify important, surprising, risky, complex or
 volatile building blocks. Leave out normal, simple, boring or
 standardized parts of your system
 
-### White Box *\<building block 1>*
+### White Box youRide Backend Monolith
 
-…describes the internal structure of *building block 1*.
+The backend monolith is refined on Level 2 because it contains the most
+important business logic and the main architectural risks. The mobile
+app/frontend, MySQL database, and external providers remain black boxes
+on this level because their internal structure is either less critical
+for the MVP architecture or outside the youRide implementation scope.
 
-*\<white box template>*
+| Name | Responsibility | Main Collaborators |
+|------|----------------|--------------------|
+| Identity / Auth Integration | Integrates with the external authentication provider, validates authentication tokens, and maps authenticated users to customer, driver, or internal roles. | External Auth Provider, Customer Management, Driver Management & Verification, Administration & Reporting |
+| Customer Management | Manages customer profile data and customer-specific ride access. | Identity / Auth Integration, Ride Management & Matching, Persistence |
+| Driver Management & Verification | Manages driver profile data, driver availability, and driver verification status before drivers can offer rides. | Identity / Auth Integration, Ride Management & Matching, Administration & Reporting, Persistence |
+| Ride Management & Matching | Handles ride requests, automatic driver matching, calculated prices, ride status transitions, cancellation, completion, and ride history. | Customer Management, Driver Management & Verification, Live Tracking, Payment Integration, Persistence |
+| Live Tracking | Processes live GPS updates and distributes active ride status and location updates to customer and driver. | Ride Management & Matching, Mobile App / Frontend |
+| Payment Integration | Integrates with Stripe for ride payments and stores payment references and payment status. | Ride Management & Matching, Stripe Payment Provider, Persistence |
+| Administration & Reporting | Supports founder/admin operations, driver verification decisions, ride inspection, basic revenue data, commission reporting, and cost overview. | Driver Management & Verification, Ride Management & Matching, Payment Integration, Persistence |
+| Persistence | Provides database access for the backend modules and isolates MySQL access from business logic. | MySQL Database, all backend modules |
 
-### White Box *\<building block 2>*
+### Level 2 Interfaces
 
-*\<white box template>*
-
-…
-
-### White Box *\<building block m>*
-
-*\<white box template>*
+| Interface | Description |
+|-----------|-------------|
+| Application API | REST endpoints exposed by the backend monolith for frontend use cases. |
+| Tracking API | WebSocket/TLS endpoint for live ride location and ride status updates. |
+| Module-internal services | Internal Java service interfaces between backend modules. They keep module boundaries explicit inside the monolith. |
+| Repository interfaces | Internal persistence interfaces used by backend modules to access stored data through the Persistence module. |
 
 ## Level 3
 
@@ -728,19 +708,12 @@ level 2 as white boxes.
 When you need more detailed levels of your architecture please copy this
 part of arc42 for additional levels.
 
-### White Box \<\_building block x.1\_\>
+### Level 3 Details
 
-Specifies the internal structure of *building block x.1*.
-
-*\<white box template>*
-
-### White Box \<\_building block x.2\_\>
-
-*\<white box template>*
-
-### White Box \<\_building block y.1\_\>
-
-*\<white box template>*
+No Level 3 details are documented for the MVP architecture at this
+stage. The current Level 2 backend structure is detailed enough to
+explain the main modularization decisions while keeping the
+documentation lean.
 
 <div style="page-break-after: always;"></div>
 
