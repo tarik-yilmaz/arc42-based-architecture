@@ -287,18 +287,23 @@ arc42 documentation.
 **Project-specific content**
 
 The following constraints limit the architectural freedom for the first
-release of youRide.
+release of youRide. They are separated from architecture decisions, so
+that later decisions can be traced back to the actual restrictions.
 
-| ID | Type | Constraint | Background and Motivation |
-|----|------|------------|---------------------------|
-| C_1 | Budget / operational | The initial production system runs on a rented Linux server. | This keeps fixed infrastructure costs low for the startup. When user numbers grow, cloud services can be added for scaling, while the rented server remains available for backup purposes. |
-| C_2 | Budget | Recurring infrastructure and tool costs must be kept as low as reasonably possible. | The founders provide and acquire the initial capital themselves, so the architecture must support a lean MVP and avoid unnecessary paid services. |
-| C_3 | Organizational | The initial company team consists of three entrepreneurs/developers, one DevOps/network employee, and one controlling employee. | The architecture, deployment process, and operational model must be simple enough for a small team to build and maintain. |
-| C_4 | Compliance | Data governance is based on GDPR. | Customer profiles, driver profiles, ride data, and location data are personal data. Privacy, security, retention, and access decisions must respect GDPR principles. |
+| ID | Category | Constraint | Background and Motivation | Architectural Consequence |
+|----|----------|------------|---------------------------|---------------------------|
+| C_1 | Budget / operational | The initial production system runs on a rented Linux server. | This keeps fixed infrastructure costs low for the startup during the MVP phase. | The initial deployment must be simple enough to run on one server and must not depend on a complex cloud setup. |
+| C_2 | Budget | Recurring infrastructure and tool costs must be kept as low as reasonably possible. | The founders provide and acquire the initial capital themselves. | The architecture must favor a lean MVP, avoid unnecessary paid services, and keep operating costs visible. |
+| C_3 | Operational / scalability | Cloud services are used later when scaling becomes necessary; the rented server remains available for backup purposes. | The startup wants to start cheaply but still keep a growth path for increasing customer, driver, and ride numbers. | The system must avoid unnecessary vendor lock-in and keep deployment, data export, and backup concepts compatible with a later cloud migration. |
+| C_4 | Organizational | The initial company team consists of three entrepreneurs/developers, one DevOps/network employee, and one controlling employee. | Development, operations, networking, and financial control are handled by a small internal team. | The architecture, deployment process, monitoring, and documentation must be understandable and maintainable by a small team. |
+| C_5 | Compliance | Data governance is based on GDPR. | Customer profiles, driver profiles, ride data, and location data are personal data. | Privacy, security, retention, access control, and deletion concepts must respect GDPR principles from the beginning. |
+
+### Non-constraints
 
 The chosen technologies, such as Java, Angular, MySQL, and REST APIs,
 are current architecture decisions and not externally mandated
-constraints.
+constraints. They will be justified in the solution strategy and
+architecture decisions sections.
 
 <div style="page-break-after: always;"></div>
 
