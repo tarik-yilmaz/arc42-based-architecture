@@ -180,11 +180,11 @@ A table with quality goals and concrete scenarios, ordered by priorities
 The following quality goals are ordered by priority and drive the main
 architectural decisions.
 
-| Priority | Quality Goal | Motivation | Concrete Scenario |
-|----------|--------------|------------|-------------------|
-| 1 | Functional suitability | Price calculations, driver matching, ride data, location data, ride status changes, and communication between drivers and customers must work correctly and reliably. | When a customer books a ride, the system calculates a price, assigns a suitable driver, stores the ride, and shows the same ride status to customer and driver. |
-| 2 | Usability | The application must be intuitive and usable without documentation for customers and drivers, because an easy-to-use platform helps win early users and supports fast startup growth. | A new customer can register, search for a ride, see the price, and request the ride without reading external instructions. |
-| 3 | Scalability | The system must support growth in active customers, active drivers, completed rides, and later cloud usage, without creating high initial infrastructure costs. | When demand grows beyond the rented Linux server, the architecture allows migration of selected infrastructure parts to cloud services while keeping the server available for backup. |
+| ID | Priority | Quality Goal | Motivation | Concrete Scenario |
+|----|----------|--------------|------------|-------------------|
+| QG_1 | 1 | Functional suitability | Price calculations, driver matching, ride data, location data, ride status changes, and communication between drivers and customers must work correctly and reliably. | When a customer books a ride, the system calculates a price, assigns a suitable driver, stores the ride, and shows the same ride status to customer and driver. |
+| QG_2 | 2 | Usability | The application must be intuitive and usable without documentation for customers and drivers, because an easy-to-use platform helps win early users and supports fast startup growth. | A new customer can register, search for a ride, see the price, and request the ride without reading external instructions. |
+| QG_3 | 3 | Scalability | The system must support growth in active customers, active drivers, completed rides, and later cloud usage, without creating high initial infrastructure costs. | When demand grows beyond the rented Linux server, the architecture allows migration of selected infrastructure parts to cloud services while keeping the server available for backup. |
 
 ## Stakeholders
 
@@ -528,12 +528,14 @@ The following solution strategies form the cornerstones of the
 architecture and provide the basis for more detailed implementation
 decisions.
 
-| Goal/Requirement | Architectural Approach |
-|------------------|------------------------|
-| Quick go-to-market | Start with a monolithic architecture to enable quick and simple implementation. This provides a reliable starting point for a small team. |
-| Familiarity | Use Java for the enterprise application parts, Python for testing, MySQL as an independent database, and REST APIs for communication between system parts. |
-| Scalability | Use cloud services to benefit from a pay-per-use model and elastic resource scaling as demand grows. |
-| Reliability | Support reliability through extensive unit tests, regular stakeholder reviews, and penetration tests to improve security. |
+| Goal / Requirement | Architectural Approach | Rationale / Linked Constraints and Goals |
+|--------------------|------------------------|------------------------------------------|
+| Fast market entry and low operating costs (`BG_1`, `BG_3`, `C_1`, `C_2`) | Build the MVP as a modular monolith. The system is deployed as one backend application, but internally structured into clear modules such as identity, ride management, payment integration, tracking, and administration. | A modular monolith keeps deployment and operations simple for the small team while still supporting maintainability through internal boundaries. |
+| Familiar and productive technology stack | Use Java for the backend monolith, Angular for the frontend, MySQL for persistence, REST APIs for normal app communication, and WebSocket communication for live tracking. | These technologies are established, affordable, and suitable for the planned MVP scope. They also support the chosen client-server and monolithic architecture. |
+| External authentication and payment (`REQ_1`, `REQ_4`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup. |
+| Cost-efficient deployment and later scalability (`QG_3`, `C_1`, `C_3`) | Start on a rented Linux server. When demand grows, add cloud services for scaling while keeping the rented server available for backup purposes. | This keeps initial costs low but leaves a realistic growth path for increasing customer, driver, and ride numbers. |
+| Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, ride status changes, matching, persistence, authentication handoff, and payment integration must work reliably. |
+| Security and data protection (`C_5`) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
 
 <div style="page-break-after: always;"></div>
 
