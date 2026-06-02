@@ -942,16 +942,58 @@ Describe (usually in a combination of diagrams, tables, and text):
 For multiple environments or alternative deployments please copy and
 adapt this section of arc42 for all relevant environments.
 
-***\<Overview Diagram>***
+**Project-specific content**
 
-Motivation  
-*\<explanation in text form>*
+### Overview
 
-Quality and/or Performance Features  
-*\<explanation in text form>*
+The MVP is deployed with a cost-efficient three-environment setup:
+development, test/staging, and production. Production initially runs on
+one rented Linux server to satisfy the budget constraints `C_1` and
+`C_2`. When demand grows, cloud services can be added later according to
+constraint `C_3`.
 
-Mapping of Building Blocks to Infrastructure  
-*\<description of the mapping>*
+| Environment | Infrastructure | Purpose |
+|-------------|----------------|---------|
+| Development | Local developer machines with local or test database instances. | Implementation, local testing, and debugging by the three entrepreneurs/developers. |
+| Test / Staging | Separate staging setup on the rented Linux server, isolated from production by configuration, database/schema, ports, and access rules. | Integration testing, deployment rehearsal, and acceptance checks before production releases. |
+| Production | Rented Linux server with Nginx, Java backend monolith, MySQL database, and backup tooling. | Productive use by customers, drivers, founding team, and controlling. |
+
+### Motivation
+
+The deployment structure favors low cost and operational simplicity. All
+productive server-side components run on one rented Linux server during
+the MVP phase. Nginx acts as reverse proxy and TLS termination point.
+The Java backend monolith and MySQL database run on the same server to
+avoid additional infrastructure cost and complexity. External
+authentication and Stripe remain outside the rented server and are
+reached through HTTPS.
+
+Customers and drivers use the mobile app. Internal administration and
+controlling can be accessed through a browser-based frontend served by
+the same frontend/application setup. This keeps the customer-facing
+experience mobile-first while still allowing efficient internal work.
+
+### Quality and Performance Features
+
+| Concern | Infrastructure Measure |
+|---------|------------------------|
+| Cost efficiency | One rented Linux server hosts Nginx, backend, database, and staging/production setups for the MVP. |
+| Security | Public access is routed through Nginx with TLS. Administrative access is restricted, e.g. via SSH and limited network access. |
+| Reliability | Automated backups are created for the MySQL database, application configuration, and relevant deployment artifacts. |
+| Recoverability | Backups are encrypted and copied to external off-server storage. Restore tests are performed regularly to verify that backups can actually be used. |
+| Scalability path | If the rented server becomes insufficient, selected parts can later move to cloud services while the rented server remains available for backup purposes. |
+
+### Mapping of Building Blocks to Infrastructure
+
+| Building Block / Artifact | Deployment Target | Notes |
+|---------------------------|-------------------|-------|
+| youRide Mobile App / Frontend | Customer and driver mobile devices; internal browser clients for administration and controlling. | Mobile-first client for customers and drivers. Browser access is used for internal admin/reporting workflows. |
+| Nginx Reverse Proxy | Rented Linux server | Handles HTTPS entry point, TLS termination, reverse proxying to the Java backend, and serving browser-based frontend assets if needed. |
+| youRide Backend Monolith | Rented Linux server | Java application deployed as one backend artifact. |
+| MySQL Database | Rented Linux server | Stores customer, driver, ride, payment reference, and reporting data. |
+| Backup tooling | Rented Linux server plus external off-server backup storage | Creates encrypted database and configuration backups and copies them away from the production server. |
+| External Auth Provider | External provider infrastructure | Used through HTTPS for authentication and identity management. |
+| Stripe Payment Provider | Stripe infrastructure | Used through HTTPS / Stripe API for ride payments. |
 
 ## Infrastructure Level 2
 
@@ -960,19 +1002,34 @@ elements from level 1.
 
 Please copy the structure from level 1 for each selected element.
 
-### *\<Infrastructure Element 1>*
+### Production Linux Server
 
-*\<diagram + explanation>*
+The production server is the central infrastructure element during the
+MVP phase.
 
-### *\<Infrastructure Element 2>*
+| Infrastructure Element | Responsibility |
+|------------------------|----------------|
+| Nginx | Public HTTPS endpoint, reverse proxy to the backend, TLS handling, optional serving of browser-based frontend assets. |
+| Java Backend Monolith | Executes youRide business logic, REST API, WebSocket/TLS tracking endpoint, provider integrations, and internal module logic. |
+| MySQL Database | Persistent storage for application data. |
+| Backup tooling | Automated encrypted backups of database, configuration, and deployment-relevant files. |
+| Monitoring / operational scripts | Basic health checks, log inspection, deployment support, and operational maintenance by the DevOps/network employee. |
 
-*\<diagram + explanation>*
+### Backup Storage
 
-…
+Backups must not only remain on the production server. The standard
+backup approach for this setup is:
 
-### *\<Infrastructure Element n>*
+1. Create automated MySQL backups and configuration backups.
+2. Encrypt backup artifacts.
+3. Store a local short-term copy for quick recovery.
+4. Copy backups to external off-server storage.
+5. Keep a simple retention policy, for example daily backups for recent
+   recovery and weekly backups for longer recovery windows.
+6. Perform regular restore tests.
 
-*\<diagram + explanation>*
+This keeps the setup affordable while reducing the risk that a server
+failure also destroys all backups.
 
 <div style="page-break-after: always;"></div>
 
