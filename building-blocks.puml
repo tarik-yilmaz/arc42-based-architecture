@@ -1,28 +1,31 @@
 @startuml
-title RideShare - Building Block View Level 1
+title youRide - Building Block View Level 1
 
 skinparam componentStyle rectangle
 skinparam packageStyle rectangle
 
-actor Passenger
+actor Customer
 actor Driver
+actor "Founding Team / Admin" as Admin
+actor "Controlling Employee" as Controlling
 
-component "RideShare Mobile App\nFrontend: Angular" as App
-component "RideShare Backend\nJava Monolith" as Backend
+component "youRide Mobile App / Frontend" as App
+component "youRide Backend\nJava Modular Monolith" as Backend
 database "MySQL Database" as DB
 
-component "Payment Processor" as PaymentProcessor
-component "Maps / GPS API" as MapsAPI
-component "Notification Service" as NotificationService
+component "External Auth Provider" as AuthProvider
+component "Stripe Payment Provider" as Stripe
 
-Passenger --> App : uses
+Customer --> App : uses
 Driver --> App : uses
+Admin --> App : administers
+Controlling --> App : requests reports
 
-App --> Backend : REST API
+App --> Backend : HTTPS/REST
+App --> Backend : WebSocket/TLS for live tracking
 
 Backend --> DB : stores and reads data
-Backend --> PaymentProcessor : processes payments
-Backend --> MapsAPI : gets location and route data
-Backend --> NotificationService : sends notifications
+Backend --> AuthProvider : authenticates users
+Backend --> Stripe : processes payments
 
 @enduml
