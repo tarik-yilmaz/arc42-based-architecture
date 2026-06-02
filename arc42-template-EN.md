@@ -1119,19 +1119,82 @@ concepts](images/08-Crosscutting-Concepts-Structure-EN.png)
 See [Concepts](https://docs.arc42.org/section-8/) in the arc42
 documentation.
 
-## *\<Concept 1>*
+**Project-specific content**
 
-*\<explanation>*
+The following concepts are documented because they affect several
+building blocks and support the main quality goals and constraints.
 
-## *\<Concept 2>*
+## Modular Monolith Boundaries
 
-*\<explanation>*
+The backend is deployed as one Java application, but internally
+structured into modules with clear responsibilities. This supports fast
+implementation and simple deployment while reducing the risk that the
+monolith becomes hard to maintain.
 
-…
+| Rule | Explanation |
+|------|-------------|
+| Keep business capabilities separated | Identity/Auth Integration, Customer Management, Driver Management & Verification, Ride Management & Matching, Live Tracking, Payment Integration, Administration & Reporting, and Persistence are treated as separate modules. |
+| Use explicit module interfaces | Modules communicate through internal Java service interfaces instead of directly depending on implementation details. |
+| Keep persistence access isolated | Database access is routed through the Persistence module or repository interfaces, so business logic does not depend directly on MySQL details. |
+| Avoid unnecessary shared logic | Shared code is only introduced when it represents stable common behavior. This helps keep module cohesion high. |
 
-## *\<Concept n>*
+Affected building blocks: youRide Backend Monolith, Persistence, MySQL
+Database.
 
-*\<explanation>*
+## Security and Authentication
+
+Authentication is delegated to an external authentication provider
+because identity management is security-critical and costly to implement
+from scratch. The backend validates authentication tokens before
+executing protected operations.
+
+| Rule | Explanation |
+|------|-------------|
+| Protect all backend APIs | REST endpoints and WebSocket/TLS tracking endpoints require authenticated users where user-specific data is involved. |
+| Use role-based access | Customer, driver, admin, and controlling functions are separated by roles. |
+| Keep authentication external | Registration, login, and token issuing are handled by the external authentication provider. |
+| Use TLS for public communication | Public frontend-backend communication and provider communication use encrypted channels. |
+| Test security-critical paths | Authentication, authorization, payment handoff, and admin access are covered by penetration tests. |
+
+Affected building blocks: Mobile App / Frontend, Backend Monolith,
+External Auth Provider, Stripe Payment Provider, Nginx.
+
+## GDPR-oriented Data Governance
+
+youRide handles personal data such as customer profiles, driver
+profiles, live location data, ride history, and payment references.
+Therefore, data handling follows GDPR-oriented principles from the
+beginning.
+
+| Rule | Explanation |
+|------|-------------|
+| Data minimization | Store only data that is needed for registration, rides, payment references, verification, history, reporting, and legal obligations. |
+| Purpose limitation | Use personal data only for the ride sharing service, payment processing, administration, reporting, and required operational purposes. |
+| Access control | Customer, driver, admin, and controlling access to data is restricted by role. |
+| Retention and deletion | Retention rules must be defined for profiles, ride history, location data, and payment references. Data that is no longer needed must be deleted or anonymized. |
+| Backup awareness | Backups contain personal data and must therefore be encrypted and handled according to the same governance principles. |
+
+Affected building blocks: Backend Monolith, MySQL Database, Backup
+tooling, Administration & Reporting, External Auth Provider, Stripe
+Payment Provider.
+
+## Error Handling and Logging
+
+Errors can occur in user workflows, backend modules, database access,
+authentication, payment processing, and deployment operations. A
+consistent error handling and logging concept is needed so that the small
+team can detect and fix problems quickly.
+
+| Rule | Explanation |
+|------|-------------|
+| Separate business and technical errors | Business errors, such as unavailable drivers or invalid ride status transitions, are handled differently from technical failures, such as database or provider errors. |
+| Return user-friendly messages | Customers and drivers receive understandable error messages without exposing internal implementation details. |
+| Log operationally relevant events | Authentication failures, payment failures, ride status changes, matching problems, and backend exceptions are logged with enough context for troubleshooting. |
+| Avoid sensitive data in logs | Logs must not contain unnecessary personal data, payment details, secrets, or authentication tokens. |
+| Support monitoring | Logs and health checks support the DevOps/network employee in detecting production issues. |
+
+Affected building blocks: Backend Monolith, Nginx, MySQL Database,
+External Auth Provider, Stripe Payment Provider.
 
 <div style="page-break-after: always;"></div>
 
