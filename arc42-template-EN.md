@@ -120,7 +120,7 @@ because both groups have different workflows and data requirements.
 | REQ_6 | Accept or decline ride request | Drivers can accept or decline incoming ride requests. |
 | REQ_7 | Track ride | Customers and drivers can track the ride with live GPS on a map and the status values requested, accepted, in progress, completed, or cancelled. |
 | REQ_8 | Cancel ride | Customers and drivers can cancel a ride before completion. |
-| REQ_9 | Complete ride | Drivers and customers can complete a ride once the trip has finished. |
+| REQ_9 | Complete ride and process payment | Drivers and customers can complete a ride once the trip has finished, and payment is processed through the external payment provider. |
 | REQ_10 | View ride history | Customers and drivers can view previously completed or cancelled rides. |
 | REQ_11 | Administer MVP | The founding team can review users, verify drivers, inspect rides, and access basic operational data. |
 
@@ -354,7 +354,7 @@ For this documentation, the youRide system boundary includes the mobile
 app/frontend, the backend monolith, the MySQL database, and the admin
 functions used by the founding team. External systems are limited to an
 external authentication provider and the payment provider Stripe in the
-MVP. Maps, ride matching, live tracking, notifications, reporting, and
+MVP. Map display, ride matching, live tracking, reporting, and
 administration are treated as youRide functionality.
 
 ## Business Context
@@ -532,7 +532,7 @@ decisions.
 |--------------------|------------------------|------------------------------------------|
 | Fast market entry and low operating costs (`BG_1`, `BG_3`, `C_1`, `C_2`) | Build the MVP as a modular monolith. The system is deployed as one backend application, but internally structured into clear modules such as identity, ride management, payment integration, tracking, and administration. | A modular monolith keeps deployment and operations simple for the small team while still supporting maintainability through internal boundaries. |
 | Familiar and productive technology stack | Use Java for the backend monolith, Angular for the frontend, MySQL for persistence, REST APIs for normal app communication, and WebSocket communication for live tracking. | These technologies are established, affordable, and suitable for the planned MVP scope. They also support the chosen client-server and monolithic architecture. |
-| External authentication and payment (`REQ_1`, `REQ_4`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup. |
+| External authentication and payment (`REQ_1`, `REQ_4`, `REQ_9`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup. |
 | Cost-efficient deployment and later scalability (`QG_3`, `C_1`, `C_3`) | Start on a rented Linux server. When demand grows, add cloud services for scaling while keeping the rented server available for backup purposes. | This keeps initial costs low but leaves a realistic growth path for increasing customer, driver, and ride numbers. |
 | Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, ride status changes, matching, persistence, authentication handoff, and payment integration must work reliably. |
 | Security and data protection (`C_5`) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
@@ -645,11 +645,11 @@ implement from scratch.
 
 | Name | Type | Responsibility | Interfaces | Fulfilled Requirements |
 |------|------|----------------|------------|------------------------|
-| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith. | `REQ_1`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
+| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, driver verification, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
 | youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to external providers, internal database connection to MySQL. | `REQ_1` to `REQ_11` |
-| MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | `REQ_1`, `REQ_2`, `REQ_4`, `REQ_7`, `REQ_10`, `REQ_11` |
+| MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_5`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
 | External Auth Provider | External system | Handles registration, login, authentication, and token issuing for customer, driver, and internal users. | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect. | `REQ_1` |
-| Stripe Payment Provider | External system | Processes ride payments and returns payment status and transaction references. | HTTPS / Stripe API. | `REQ_4`, `BG_2` |
+| Stripe Payment Provider | External system | Processes ride payments and returns payment status and transaction references. | HTTPS / Stripe API. | `REQ_9`, `BG_2` |
 
 ### Important Interfaces
 
@@ -1499,6 +1499,7 @@ documentation.
 |------|------------|
 | Administration & Reporting | Backend module that supports founder/admin operations, driver verification decisions, ride inspection, revenue data, commission reporting, and cost overview. |
 | Admin / Administrator | Internal user who can review users, verify drivers, inspect rides, and perform operational corrections. |
+| Angular | Frontend technology chosen for the youRide mobile app/frontend layer. |
 | Architecture Decision (`AD_*`) | Documented architectural choice with context, alternatives, rationale, and consequences. |
 | Authentication Token | Digital proof issued by the external authentication provider and validated by the backend before protected operations are executed. |
 | Automatic Driver Matching | youRide functionality that selects a suitable verified and available driver for a customer ride request. |
@@ -1510,7 +1511,7 @@ documentation.
 | Commission | Revenue model in which youRide receives a share of each completed ride payment. |
 | Constraint (`C_*`) | Requirement or restriction that limits architectural freedom, for example budget, GDPR, team size, or rented server operation. |
 | Controlling Employee | Internal stakeholder responsible for cost overview, revenue data, commission reporting, and basic operational reporting. |
-| Customer | User who searches for, books, tracks, cancels, completes, and reviews rides through youRide. |
+| Customer | User who searches for, books, tracks, cancels, and completes rides through youRide. |
 | Customer Management | Backend module that manages customer profile data and customer-specific ride access. |
 | Data Governance | Rules for handling data, especially personal data, including purpose, access, retention, deletion, logging, and backup handling. |
 | Development Environment | Local environment on developer machines used for implementation, testing, and debugging. |
@@ -1525,6 +1526,7 @@ documentation.
 | HTTPS | Encrypted HTTP communication used for frontend-backend communication and external provider APIs. |
 | Identity / Auth Integration | Backend module that integrates with the external authentication provider and maps authenticated users to roles. |
 | Integration Test | Test that checks whether several system parts or external integrations work together correctly. |
+| Java | Programming language chosen for the youRide backend monolith. |
 | Live GPS | Regular location information sent by the driver during an active ride. |
 | Live Tracking | youRide functionality that distributes active ride status and live GPS updates between driver and customer. |
 | Live Tracking Channel | WebSocket/TLS channel used for active ride location and status updates. |
