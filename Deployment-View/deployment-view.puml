@@ -1,0 +1,52 @@
+@startuml deployment-mvp
+skinparam node {
+    BackgroundColor White
+    BorderColor Black
+}
+skinparam component {
+    BackgroundColor White
+    BorderColor Black
+}
+
+node "<<device>>\nCustomer / Driver Mobile" as mobile {
+    component "youRide Mobile App" as app
+}
+
+node "<<device>>\nAdmin Workplace" as admin {
+    node "<<executionEnvironment>>\nWeb Browser" {
+        artifact "Browser-based Frontend" as webUI
+    }
+}
+
+node "<<device>>\nRented Linux Server (Production)" as server {
+    node "<<executionEnvironment>>\nNginx (reverse proxy)" as nginx
+    
+    node "<<executionEnvironment>>\nJava Runtime" {
+        component "youRide Backend Monolith" as backend
+    }
+    
+    node "<<executionEnvironment>>\nMySQL Server" {
+        database "youRide Database" as db
+    }
+    
+    node "<<executionEnvironment>>\nOS / Cron" {
+        component "Backup Tooling" as backup
+    }
+    
+    nginx --> backend : <<HTTP / WS>>
+    backend --> db : <<JDBC>>
+    backup --> backend : <<local read>>
+}
+
+cloud "<<external system>>\nAuth Provider" as auth
+cloud "<<external system>>\nStripe Payment Provider" as stripe
+database "<<external system>>\nOff-server Backup Storage" as remoteBackup
+
+app <--> nginx : <<HTTPS / WSS>>
+webUI <--> nginx : <<HTTPS>>
+
+backend --> auth : <<HTTPS>>
+backend --> stripe : <<HTTPS>>
+backup --> remoteBackup : <<Encrypted Transfer>>
+
+@enduml
