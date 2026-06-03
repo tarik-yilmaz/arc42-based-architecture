@@ -1493,7 +1493,68 @@ Potentially more columns in case you need translations.
 See [Glossary](https://docs.arc42.org/section-12/) in the arc42
 documentation.
 
-| Term        | Definition        |
-|-------------|-------------------|
-| *\<Term-1>* | *\<definition-1>* |
-| *\<Term-2>* | *\<definition-2>* |
+**Project-specific content**
+
+| Term | Definition |
+|------|------------|
+| Administration & Reporting | Backend module that supports founder/admin operations, driver verification decisions, ride inspection, revenue data, commission reporting, and cost overview. |
+| Admin / Administrator | Internal user who can review users, verify drivers, inspect rides, and perform operational corrections. |
+| Architecture Decision (`AD_*`) | Documented architectural choice with context, alternatives, rationale, and consequences. |
+| Authentication Token | Digital proof issued by the external authentication provider and validated by the backend before protected operations are executed. |
+| Automatic Driver Matching | youRide functionality that selects a suitable verified and available driver for a customer ride request. |
+| Backup | Copy of database, configuration, and deployment-relevant files used for recovery after data loss or server failure. |
+| Backend Monolith | Java backend application that contains the central youRide business logic and is deployed as one artifact. |
+| Booking | Customer action that requests a ride and triggers price calculation, driver matching, and ride creation. |
+| Browser-based Frontend | Internal web access used by administration and controlling for operational workflows. |
+| Cloud Services | External infrastructure services that can be added later when the rented Linux server is no longer sufficient for growth. |
+| Commission | Revenue model in which youRide receives a share of each completed ride payment. |
+| Constraint (`C_*`) | Requirement or restriction that limits architectural freedom, for example budget, GDPR, team size, or rented server operation. |
+| Controlling Employee | Internal stakeholder responsible for cost overview, revenue data, commission reporting, and basic operational reporting. |
+| Customer | User who searches for, books, tracks, cancels, completes, and reviews rides through youRide. |
+| Customer Management | Backend module that manages customer profile data and customer-specific ride access. |
+| Data Governance | Rules for handling data, especially personal data, including purpose, access, retention, deletion, logging, and backup handling. |
+| Development Environment | Local environment on developer machines used for implementation, testing, and debugging. |
+| DevOps / Network Employee | Internal employee responsible for reliable deployment, server/network operation, monitoring, backups, and later cloud integration. |
+| Driver | Private or professional user who offers rides, accepts or declines ride requests, sends live location data, and completes rides. |
+| Driver Management & Verification | Backend module that manages driver profile data, availability, and verification status. |
+| Driver Verification | Process in which the company checks and approves a driver before the driver can offer rides on the platform. |
+| External Auth Provider | External service used for registration, login, authentication, and token issuing. |
+| Frontend REST API | HTTPS/REST interface used by the mobile app/frontend for normal application commands such as search, booking, cancellation, completion, history, administration, and reporting. |
+| GDPR | General Data Protection Regulation; legal basis for youRide's privacy and data governance decisions. |
+| GDPR-oriented Data Governance | youRide concept that applies GDPR principles to customer, driver, ride, location, payment reference, log, and backup data. |
+| HTTPS | Encrypted HTTP communication used for frontend-backend communication and external provider APIs. |
+| Identity / Auth Integration | Backend module that integrates with the external authentication provider and maps authenticated users to roles. |
+| Integration Test | Test that checks whether several system parts or external integrations work together correctly. |
+| Live GPS | Regular location information sent by the driver during an active ride. |
+| Live Tracking | youRide functionality that distributes active ride status and live GPS updates between driver and customer. |
+| Live Tracking Channel | WebSocket/TLS channel used for active ride location and status updates. |
+| Mobile App / Frontend | User-facing application for customers and drivers; internal browser access can be used for administration and controlling. |
+| Modular Monolith | Architectural style where the backend is deployed as one application but internally structured into explicit modules. |
+| Module | Internal backend building block with a clear responsibility and explicit interfaces. |
+| MVP | Minimum Viable Product; the first useful version of youRide built to validate the Austrian market with low cost and fast delivery. |
+| MySQL Database | Relational database used by youRide to store profiles, rides, statuses, prices, payment references, and reporting data. |
+| Nginx | Reverse proxy on the rented Linux server that handles HTTPS entry, TLS termination, reverse proxying, and optional frontend asset delivery. |
+| OAuth 2.0 / OpenID Connect | Standard authentication and authorization protocols assumed for the external authentication provider integration. |
+| Off-server Backup Storage | Backup storage outside the production server, used so that a server failure does not destroy all backups. |
+| Payment Integration | Backend module that integrates with Stripe, stores payment references, and handles payment status. |
+| Payment Reference | Stored reference to an external payment transaction, used for ride history, reconciliation, and reporting. |
+| Penetration Test | Security test that attempts to find vulnerabilities in authentication, authorization, payment handoff, admin access, and other security-critical paths. |
+| Persistence | Backend module or repository layer that isolates database access from business logic. |
+| Production Environment | Productive infrastructure used by real customers, drivers, founding team, and controlling. |
+| Quality Goal (`QG_*`) | High-priority architectural quality target such as functional suitability, usability, or scalability. |
+| Quality Scenario (`QS_*`) | Concrete and evaluable scenario that describes how the system must react to a stimulus. |
+| Rented Linux Server | Initial production server used to keep infrastructure costs low during the MVP phase. |
+| REST API | Request/response interface used for normal application operations between frontend and backend. |
+| Restore Test | Test that verifies whether a backup can actually be restored and used after a failure. |
+| Ride | Central business object representing a trip request and execution, including customer, driver, pickup, destination, price, payment reference, and status. |
+| Ride History | Stored list of completed or cancelled rides visible to customers and drivers and useful for reporting. |
+| Ride Management & Matching | Backend module that handles ride requests, matching, prices, status transitions, cancellation, completion, and ride history. |
+| Ride Request | Customer request for a spontaneous or planned ride. |
+| Ride Status | Lifecycle state of a ride, for example `requested`, `accepted`, `in progress`, `completed`, or `cancelled`. |
+| Role-based Access Control | Access concept where customer, driver, admin, and controlling functions are restricted by role. |
+| Staging / Test Environment | Environment used for integration testing, deployment rehearsal, and acceptance checks before production releases. |
+| Stripe | External payment provider used by youRide for ride payments and transaction references. |
+| TLS | Encryption protocol used for secure HTTPS and WebSocket communication. |
+| Unit Test | Test that verifies a small unit of code, such as price calculation or ride status logic, in isolation. |
+| WebSocket | Bidirectional communication channel used for live tracking updates during active rides. |
+| youRide | Austrian ride sharing startup application documented in this architecture documentation. |
