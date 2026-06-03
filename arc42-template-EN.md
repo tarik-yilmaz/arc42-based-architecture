@@ -1449,11 +1449,14 @@ the arc42 documentation.
 The following risks and technical debts must be monitored during
 development and operation.
 
-| Risk/Technical Debt | Description | Suggested Measure |
-|---------------------|-------------|-------------------|
-| Monolithic architecture | As the code base grows, switching to a different architecture becomes more complex and difficult. A change may become necessary because of scalability or complexity. | Keep the monolith modular, define clear internal boundaries, and regularly evaluate whether parts of the system should be extracted later. |
-| Relying on cloud services | With rising user numbers, operating costs may increase significantly. An on-premises setup could become more cost-effective, but migration would require complex data migration. | Monitor cloud costs, define cost thresholds, and keep data export and migration options available. |
-| Growing test cases | A growing application can lead to many more test cases. This may require a dedicated testing suite including end-to-end tests to ensure maximum reliability. | Separate unit, integration, and end-to-end tests, automate them in the build pipeline, and keep the test suite maintainable. |
+| Priority | Risk / Technical Debt | Related Decisions / Constraints | Description | Suggested Measure |
+|----------|-----------------------|---------------------------------|-------------|-------------------|
+| 1 | Monolith can become too complex | `AD_1`, `QG_3` | The modular monolith is good for the MVP, but the code base can become difficult to understand and change when features, modules, and dependencies grow. | Keep module boundaries explicit, review dependencies regularly, and avoid direct access to implementation details of other modules. |
+| 2 | Single rented server as bottleneck and single point of failure | `AD_2`, `C_1`, `C_3` | Backend, MySQL, Nginx, and production infrastructure run on one rented Linux server during the MVP. A server failure or overload can affect the whole system. | Monitor server resources, define migration triggers, keep backups off-server, and prepare a later cloud scaling path. |
+| 3 | External provider dependency for authentication and payment | `AD_3`, `AD_4` | youRide depends on the availability, pricing, API stability, and terms of the external authentication provider and Stripe. Provider problems can block login or payment workflows. | Keep provider integrations isolated, log provider failures, document fallback procedures, and store external transaction references consistently. |
+| 4 | GDPR and privacy risk for sensitive data | `C_5`, `QS_PRIV_1` | Customer profiles, driver profiles, location data, ride history, and payment references are sensitive personal data. Wrong access, excessive storage, or unsafe logs can create legal and trust problems. | Apply GDPR-oriented data governance, role-based access control, data minimization, retention/deletion rules, encrypted backups, and logging rules that avoid sensitive data. |
+| 5 | Monolithic architecture is limited for scaling | `AD_1`, `QG_3`, `QS_SCAL_1` | A monolith cannot scale individual business capabilities independently. If only live tracking, matching, or payment integration becomes heavily loaded, the whole backend must initially be scaled together. | Keep the monolith modular, monitor load by module or use case where possible, and use the cloud migration path when the rented server is no longer sufficient. |
+| 6 | Backup and restore risk | `C_3`, Deployment View | Backups are only useful if they are complete, encrypted, stored away from the production server, and restorable. Without restore tests, the team might discover backup problems too late. | Automate database and configuration backups, copy them to off-server storage, define retention, and perform regular restore tests. |
 
 <div style="page-break-after: always;"></div>
 
