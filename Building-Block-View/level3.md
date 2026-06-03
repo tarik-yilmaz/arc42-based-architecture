@@ -1,13 +1,14 @@
-%% Kritik (teilweise eingearbeitet): Zu überflächig (muss tief gehen), soll Architektur besser abbilden
-
 classDiagram
-    %% ==========================================
-    %% DOMAIN LAYER (Purer Geschäfts-Code, keine externen APIs)
-    %% ==========================================
-    
+    %% Level 3: White Box Ride Management & Matching
+    %% Focus: ride lifecycle, automatic matching, pricing, payment handoff.
+
     class RideStatus {
         <<enumeration>>
-        REQUESTED, DRIVER_ASSIGNED, IN_PROGRESS, COMPLETED
+        REQUESTED
+        ACCEPTED
+        IN_PROGRESS
+        COMPLETED
+        CANCELLED
     }
 
     class Location {
@@ -18,76 +19,95 @@ classDiagram
 
     class Money {
         <<Value Object>>
-        +double amount
+        +decimal amount
         +String currency
     }
 
     class Ride {
         <<Aggregate Root>>
         -UUID id
-        -UUID passengerId
+        -UUID customerId
         -UUID driverId
         -Location pickup
-        -Location dropoff
+        -Location destination
+        -Money price
+        -String paymentReference
         -RideStatus status
-        +request(UUID passengerId, Location pickup, Location dropoff) Ride$
         +assignDriver(UUID driverId) void
-        +complete() void
+        +accept() void
+        +start() void
+        +cancel() void
+        +complete(String paymentReference) void
     }
-
-    class RideCompletedEvent {
-        <<Domain Event>>
-        +UUID rideId
-        +UUID passengerId
-        +DateTime timestamp
-        %% Hinweis: Das Payment-Modul hört dieses Event ab!
-    }
-
-    %% ==========================================
-    %% APPLICATION LAYER (Use Cases des Moduls)
-    %% ==========================================
 
     class RideApplicationService {
         <<Application Service>>
-        -IRideRepository repository
-        -IRoutingProvider routingProvider
-        -IEventPublisher eventPublisher
-        +requestRide(UUID passengerId, Location start, Location end) UUID
-        +finishRide(UUID rideId) void
+        -RideRepositoryPort repository
+        -MatchingService matchingService
+        -PriceCalculation priceCalculation
+        -RideStatusPolicy statusPolicy
+        -PaymentHandoff paymentHandoff
+        +searchRides(Location pickup, Location destination, DateTime time) RideOption[]
+        +requestRide(UUID customerId, Location pickup, Location destination, DateTime time) UUID
+        +acceptRide(UUID rideId, UUID driverId) void
+        +startRide(UUID rideId) void
+        +cancelRide(UUID rideId, UUID actorId) void
+        +completeRide(UUID rideId) void
+        +getRideHistory(UUID userId) Ride[]
     }
 
-    %% ==========================================
-    %% PORTS (Interfaces für Abhängigkeiten nach außen)
-    %% ==========================================
-    %% Diese Interfaces gehören dem Ride-Modul. 
-    %% Wer sie wie implementiert, ist dem Modul egal!
+    class MatchingService {
+        <<Domain Service>>
+        -DriverVerificationPort driverVerification
+        +matchDriver(Location pickup, DateTime time) UUID
+    }
 
-    class IRideRepository {
+    class PriceCalculation {
+        <<Domain Service>>
+        +calculatePrice(Location pickup, Location destination, DateTime time) Money
+    }
+
+    class RideStatusPolicy {
+        <<Domain Policy>>
+        +canAccept(Ride ride, UUID driverId) boolean
+        +canStart(Ride ride) boolean
+        +canCancel(Ride ride, UUID actorId) boolean
+        +canComplete(Ride ride) boolean
+    }
+
+    class PaymentHandoff {
+        <<Application Service>>
+        -PaymentIntegrationPort paymentIntegration
+        +processRidePayment(Ride ride) String
+    }
+
+    class RideRepositoryPort {
         <<interface / Port>>
         +save(Ride ride) void
         +findById(UUID rideId) Ride
-    }
-    
-    class IRoutingProvider {
-        <<interface / Port>>
-        +calculateDistance(Location start, Location end) double
-    }
-    
-    class IEventPublisher {
-        <<interface / Port>>
-        +publish(DomainEvent event) void
+        +findHistoryByUser(UUID userId) Ride[]
     }
 
-    %% ==========================================
-    %% RELATIONS
-    %% ==========================================
-    
+    class DriverVerificationPort {
+        <<interface / Port>>
+        +findVerifiedAvailableDrivers(Location pickup, DateTime time) UUID[]
+    }
+
+    class PaymentIntegrationPort {
+        <<interface / Port>>
+        +processPayment(UUID rideId, Money amount) String
+    }
+
     Ride "1" *-- "1" RideStatus : has
     Ride "1" *-- "2" Location : uses
-    
-    Ride ..> RideCompletedEvent : generates
-    
-    RideApplicationService --> IRideRepository : uses
-    RideApplicationService --> IRoutingProvider : uses
-    RideApplicationService --> IEventPublisher : uses
+    Ride "1" *-- "1" Money : has
+
+    RideApplicationService --> RideRepositoryPort : stores and loads rides
+    RideApplicationService --> MatchingService : selects driver
+    RideApplicationService --> PriceCalculation : calculates price
+    RideApplicationService --> RideStatusPolicy : validates transitions
+    RideApplicationService --> PaymentHandoff : triggers payment on completion
     RideApplicationService ..> Ride : orchestrates
+
+    MatchingService --> DriverVerificationPort : asks for verified drivers
+    PaymentHandoff --> PaymentIntegrationPort : delegates Stripe payment
