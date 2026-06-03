@@ -708,12 +708,68 @@ level 2 as white boxes.
 When you need more detailed levels of your architecture please copy this
 part of arc42 for additional levels.
 
-### Level 3 Details
+### White Box Ride Management & Matching
 
-No Level 3 details are documented for the MVP architecture at this
-stage. The current Level 2 backend structure is detailed enough to
-explain the main modularization decisions while keeping the
-documentation lean.
+Ride Management & Matching is refined on Level 3 because it is the core
+business module of youRide. It supports the most important MVP
+requirements: ride search, booking, automatic driver matching, ride
+status handling, cancellation, completion, ride history, and the payment
+handoff.
+
+A class-diagram style model for this Level 3 view is maintained in
+`Building-Block-View/level3.md`.
+
+### Motivation
+
+This module must keep the ride lifecycle consistent. Customers and
+drivers must see the same ride state, price, and matching result. The
+module also coordinates with Driver Management & Verification, Live
+Tracking, Payment Integration, and Persistence. Therefore, its internal
+structure is more relevant than the internal structure of simpler or
+external building blocks.
+
+### Internal Building Blocks
+
+| Name | Responsibility | Main Collaborators |
+|------|----------------|--------------------|
+| Ride Application Service | Orchestrates ride use cases such as search, request, accept, cancel, start, complete, and history access. | Application API, Ride Aggregate, Matching Service, Price Calculation, Ride Repository Port, Payment Integration |
+| Ride Aggregate | Represents one ride and protects ride invariants such as customer, driver, pickup, destination, price, payment reference, and current status. | Ride Application Service, Ride Status Policy |
+| Matching Service | Selects a suitable verified and available driver for a ride request. | Driver Management & Verification, Live Tracking, Ride Application Service |
+| Price Calculation | Calculates the ride price before booking and provides the price used for the later payment request. | Ride Application Service, Persistence |
+| Ride Status Policy | Validates allowed status transitions, for example from `requested` to `accepted` or from `in progress` to `completed`. | Ride Aggregate, Ride Application Service |
+| Ride Repository Port | Defines persistence operations for ride requests, status changes, prices, payment references, and ride history. | Persistence, MySQL Database |
+| Payment Handoff | Coordinates ride completion with Payment Integration so that Stripe payment processing is triggered before the ride is finally stored as completed. | Payment Integration, Ride Application Service |
+
+### Important Interfaces
+
+| Interface / Operation | Description |
+|-----------------------|-------------|
+| `searchRides(...)` | Returns ride options or availability information for spontaneous or planned rides. |
+| `requestRide(customerId, pickup, destination, time)` | Creates a ride request, calculates a price, matches a driver, and stores the ride with status `requested`. |
+| `acceptRide(rideId, driverId)` | Validates the assigned driver and changes the ride status to `accepted`. |
+| `startRide(rideId)` | Changes the ride status to `in progress` when the ride begins. |
+| `cancelRide(rideId, actorId)` | Cancels a ride when the current status allows cancellation. |
+| `completeRide(rideId)` | Completes a ride after payment processing has been triggered through Payment Integration. |
+| `getRideHistory(userId)` | Returns completed or cancelled rides for customer or driver history views. |
+
+### Ride Status Transitions
+
+| Current Status | Trigger | Next Status | Notes |
+|----------------|---------|-------------|-------|
+| `requested` | Matching result is available and driver accepts the request. | `accepted` | Driver must be verified and allowed to accept the ride. |
+| `requested` | Customer or system cancels before acceptance. | `cancelled` | No payment is processed. |
+| `accepted` | Driver and customer start the ride. | `in progress` | Live tracking continues through the Live Tracking module. |
+| `accepted` | Customer or driver cancels before the ride starts. | `cancelled` | Cancellation is stored for ride history and reporting. |
+| `in progress` | Ride reaches the destination and payment is processed. | `completed` | Payment Integration stores the Stripe payment reference. |
+| `in progress` | Exceptional cancellation during the ride. | `cancelled` | Requires business rules for later refinement. |
+
+### Quality and Risk Notes
+
+-   Supports `REQ_3` to `REQ_10`, `QG_1`, `QG_2`, and `QG_3`.
+-   Direct database access is avoided through the Ride Repository Port.
+-   Payment details are delegated to Payment Integration and Stripe.
+-   The module must be kept cohesive because it is a major risk area for
+    monolith complexity and scaling limitations.
 
 <div style="page-break-after: always;"></div>
 
