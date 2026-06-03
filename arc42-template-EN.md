@@ -1251,11 +1251,12 @@ arc42 documentation. There you will find links and examples about ADR.
 The following decisions document the most important architecture choices
 that stakeholders must be able to understand and trace.
 
-| Problem | Considered Alternatives | Decision and Rationale |
-|---------|-------------------------|------------------------|
-| Cloud costs can grow strongly with high usage. | On-premises hosting. | Use cloud hosting initially because it avoids upfront infrastructure investment, is easy to scale, and only creates costs based on actual usage. |
-| A monolith can become too complex as the application grows. | Microservices. | Start with a monolith because it is easier to get going, deploy, and change quickly. This is suitable for a small team and startup context. |
-| Database support must be affordable and independent. | Microsoft SQL Server. | Use MySQL because it has no upfront license payment and avoids dependency on one large vendor. |
+| ID | Status | Problem / Context | Considered Alternatives | Decision and Rationale | Consequences |
+|----|--------|-------------------|-------------------------|------------------------|--------------|
+| AD_1 | Accepted | The startup needs a fast, cost-efficient MVP that can be built and operated by a small team. | Microservices, service-oriented architecture. | Use a modular monolith. It keeps deployment simple and affordable while internal module boundaries support maintainability. | Positive: fast implementation and simple operation. Negative: scaling individual business capabilities independently is not possible in the MVP architecture. |
+| AD_2 | Accepted | Initial infrastructure costs must stay low, but the system still needs a growth path. | Cloud-first deployment, fully on-premises infrastructure. | Start on a rented Linux server and add cloud services later when scaling becomes necessary. The rented server remains available for backup purposes. | Positive: low initial cost and simple operations. Negative: the rented server can become a bottleneck and requires a later migration path. |
+| AD_3 | Accepted | Authentication is security-critical and too expensive to implement safely from scratch in the MVP phase. | Self-built authentication, external authentication provider. | Use an external authentication provider for registration, login, and token issuing. | Positive: reduced security and implementation risk. Negative: dependency on an external provider and its availability, pricing, and integration API. |
+| AD_4 | Accepted | Payment processing is business-critical, security-critical, and legally sensitive. | Self-built payment handling, another payment provider. | Use Stripe as external payment provider for ride payments and transaction references. | Positive: faster implementation and proven payment handling. Negative: dependency on Stripe fees, API availability, and provider rules. |
 
 <div style="page-break-after: always;"></div>
 
