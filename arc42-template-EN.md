@@ -1041,6 +1041,8 @@ experience mobile-first while still allowing efficient internal work.
 
 ### Mapping of Building Blocks to Infrastructure
 
+![Deployment View](./resource/deployment-view.png)
+
 | Building Block / Artifact | Deployment Target | Notes |
 |---------------------------|-------------------|-------|
 | youRide Mobile App / Frontend | Customer and driver mobile devices; internal browser clients for administration and controlling. | Mobile-first client for customers and drivers. Browser access is used for internal admin/reporting workflows. |
@@ -1395,6 +1397,8 @@ and are refined here with concrete scenarios.
 | Performance efficiency | Medium | `QG_1`, `QG_2` | Important user actions should respond in less than two seconds under normal MVP load. | `QS_PERF_1` |
 | Live tracking timeliness | Medium | `REQ_7` | Live GPS updates should be visible frequently enough to make active rides transparent. | `QS_PERF_2` |
 | Security and GDPR | High | `C_5` | Sensitive customer, driver, location, ride, and payment reference data must be protected. | `QS_SEC_1`, `QS_PRIV_1` |
+
+![Quality Tree](./resource/quality_tree.png)
 
 ## Quality Scenarios
 
