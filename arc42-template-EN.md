@@ -1217,6 +1217,27 @@ executing protected operations.
 Affected building blocks: Mobile App / Frontend, Backend Monolith,
 External Auth Provider, Stripe Payment Provider, Nginx.
 
+## Testing Concept
+
+Testing is treated as a cross-cutting concept because the main MVP risks
+span several modules and external providers: price calculation, driver
+matching, ride status changes, live tracking, authentication, payment
+handoff, deployment, and backup recovery.
+
+| Rule | Explanation |
+|------|-------------|
+| Cover core business rules with unit tests | Price calculation, matching decisions, ride status transitions, cancellation rules, and payment reference handling are tested close to the backend modules that implement them. |
+| Verify module collaboration with integration tests | Backend module interfaces, persistence access, REST APIs, and WebSocket/TLS tracking flows are tested together so that the modular monolith behaves consistently as one application. |
+| Test external provider integration explicitly | Authentication and Stripe integration are tested with provider test modes, mocks, or contract-style checks so that the MVP does not depend on manual production checks. |
+| Use staging for end-to-end and acceptance checks | The separate staging/test environment is used for complete customer, driver, admin, payment, and deployment rehearsal workflows before production releases. |
+| Include security and privacy tests | Authentication, authorization, admin access, payment handoff, logging, and handling of personal data are checked as part of regression and penetration testing. |
+| Validate operational recovery | Backups are not only created, but also verified through restore tests so that database and configuration recovery remain reliable. |
+
+Affected building blocks: Mobile App / Frontend, Backend Monolith,
+Identity/Auth Integration, Ride Management & Matching, Live Tracking,
+Payment Integration, Persistence, MySQL Database, External Auth Provider,
+Stripe Payment Provider, Backup tooling, Deployment infrastructure.
+
 ## GDPR-oriented Data Governance
 
 youRide handles personal data such as customer profiles, driver
