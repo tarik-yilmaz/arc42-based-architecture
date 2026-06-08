@@ -11,6 +11,14 @@ classDiagram
         CANCELLED
     }
 
+    class PaymentStatus {
+        <<enumeration>>
+        PENDING
+        RETRYING
+        CONFIRMED
+        FAILED
+    }
+
     class Location {
         <<Value Object>>
         +double latitude
@@ -32,12 +40,14 @@ classDiagram
         -Location destination
         -Money price
         -String paymentReference
+        -PaymentStatus paymentStatus
         -RideStatus status
         +assignDriver(UUID driverId) void
         +accept() void
         +start() void
         +cancel() void
-        +complete(String paymentReference) void
+        +complete() void
+        +recordPaymentResult(String paymentReference, PaymentStatus status) void
     }
 
     class RideApplicationService {
@@ -78,7 +88,7 @@ classDiagram
     class PaymentHandoff {
         <<Application Service>>
         -PaymentIntegrationPort paymentIntegration
-        +processRidePayment(Ride ride) String
+        +queueRidePayment(Ride ride) void
     }
 
     class RideRepositoryPort {
@@ -95,10 +105,11 @@ classDiagram
 
     class PaymentIntegrationPort {
         <<interface / Port>>
-        +processPayment(UUID rideId, Money amount) String
+        +queuePayment(UUID rideId, Money amount) void
     }
 
     Ride "1" *-- "1" RideStatus : has
+    Ride "1" *-- "1" PaymentStatus : has
     Ride "1" *-- "2" Location : uses
     Ride "1" *-- "1" Money : has
 
@@ -110,4 +121,4 @@ classDiagram
     RideApplicationService ..> Ride : orchestrates
 
     MatchingService --> DriverVerificationPort : asks for verified drivers
-    PaymentHandoff --> PaymentIntegrationPort : delegates Stripe payment
+    PaymentHandoff --> PaymentIntegrationPort : queues payment request

@@ -30,13 +30,13 @@
 
 **Business Context:** Kunden, Fahrer, Admins, Controlling, externer Auth Provider und Stripe.
 
-**Technical Context:** HTTPS/REST für normale App-Kommunikation, WebSocket over TLS für Live-Tracking, HTTPS zu Auth/Stripe, interne DB-Verbindung zu MySQL.
+**Technical Context:** HTTPS/REST für normale App-Kommunikation, WebSocket over TLS für Live-Tracking, HTTPS zum Auth Provider, interne Payment Queue plus Payment Worker zu Stripe, interne DB-Verbindung zu MySQL.
 
 # Kapitel 4 - Solution Strategy
 
 **Architektur Stil:** Modular Monolith, also Monolith nach ausssen, aber intern klare Module
 
-**Technologie Entscheidungen:** Java Backend, Angular Frontend, MySQL, REST, Websocket, Stripe, externer Auth Provider
+**Technologie Entscheidungen:** Java Backend, Angular Frontend, MySQL, REST, Websocket, interne Payment Queue, Stripe, externer Auth Provider
 
 **Skalierungsstrategie:** erst gemieteter Linux-Server, spaeter Cloud Services, Server bleibt Backup
 
@@ -56,11 +56,11 @@
 
 **2:** Fahrer akzeptiert fahrt und live tracking beginnt
 
-**3:** Fahrt ist beendet und Zahlprozess startet ueber Stripe
+**3:** Fahrt ist beendet, Payment Request wird in eine Queue geschrieben und der Payment Worker verarbeitet Stripe asynchron
 
 # Kapitel 7 - Deployment view
 
-**Wo laeuft alles?:** auf dem gemieteten Linux-Server: also Backend, MySQL, Webserver/Reverse Proxy
+**Wo laeuft alles?:** auf dem gemieteten Linux-Server: also Backend, Payment Worker, interne Payment Queue, MySQL, Webserver/Reverse Proxy
 
 **Wo laeuft die App?:** Als Mobile App auf den Geraeten der Kunden und Fahrer
 
@@ -90,7 +90,7 @@
 
 **3:** Externe Anbieter fuer authentication statt self-build
 
-**4:** Stripe fuer Payment statt selbst gebautem Payment
+**4:** Stripe fuer Payment statt selbst gebautem Payment, mit interner Queue fuer robuste Payment-Verarbeitung
 
 # Kapitel 10 - Quality Requirements
 
@@ -110,7 +110,7 @@
 
 **2:** Ein gemieteter Server als Bottleneck oder Single Point of Failure
 
-**3:** Abhaengigkeiten von externen Anbietern (Authentication und Stripe)
+**3:** Abhaengigkeiten von externen Anbietern (Authentication und Stripe), bei Payment durch Queue/Retry abgemildert
 
 **4:** GDPR/Privacy Risiko, weil Kundenprofile, Fahrerprofile, Standortdaten, Fahrthistorie und Payment-Referenzen sensible Daten sind
 

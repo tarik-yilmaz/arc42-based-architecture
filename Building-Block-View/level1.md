@@ -2,7 +2,7 @@
 
 graph TD
     %% Akteure
-    Passenger([Fahrgast])
+    Customer([Customer])
     Driver([Fahrer])
 
     %% Externe APIs
@@ -30,11 +30,11 @@ graph TD
     end
 
     %% Verbindungen innerhalb des Systems
-    Passenger -->|Bucht Fahrt| RideMgmt
+    Customer -->|Bucht Fahrt| RideMgmt
     Driver -->|Nimmt Fahrt an| RideMgmt
-    Passenger -->|Verwaltet Fahrten & Profil| UserMgmt
+    Customer -->|Verwaltet Fahrten & Profil| UserMgmt
     Driver -->|Verwaltet Fahrten & Profil| UserMgmt
-    Passenger -->|Meldet sich an| Authentication
+    Customer -->|Meldet sich an| Authentication
     Driver -->|Meldet sich an| Authentication
     
     UserMgmt -->|Stellt verifizierte Fahrer| RideMgmt
@@ -58,4 +58,4 @@ graph TD
     class UserMgmt,Location support;
     class Notification,Authentication generic;
     class BillingAPI,MapsAPI,GPSAPI,AuthAPI extApi;
-    class Passenger,Driver actor;
+    class Customer,Driver actor;

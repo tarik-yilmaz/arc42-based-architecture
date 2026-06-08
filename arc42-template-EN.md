@@ -536,7 +536,7 @@ decisions.
 |--------------------|------------------------|------------------------------------------|
 | Fast market entry and low operating costs (`BG_1`, `BG_3`, `C_1`, `C_2`) | Build the MVP as a modular monolith. The system is deployed as one backend application, but internally structured into clear modules such as identity, ride management, payment integration, tracking, and administration. | A modular monolith keeps deployment and operations simple for the small team while still supporting maintainability through internal boundaries. |
 | Familiar and productive technology stack | Use Java for the backend monolith, Angular for the frontend, MySQL for persistence, REST APIs for normal app communication, and WebSocket communication for live tracking. | These technologies are established, affordable, and suitable for the planned MVP scope. They also support the chosen client-server and monolithic architecture. |
-| External authentication and payment (`REQ_1`, `REQ_4`, `REQ_9`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup. |
+| External authentication and payment (`REQ_1`, `REQ_4`, `REQ_9`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. Payment requests are handed off through an internal durable queue before Stripe communication. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup, while queued payment handoff reduces the effect of temporary network or provider errors. |
 | Cost-efficient deployment and later scalability (`QG_3`, `C_1`, `C_3`) | Start on a rented Linux server. When demand grows, add cloud services for scaling while keeping the rented server available for backup purposes. | This keeps initial costs low but leaves a realistic growth path for increasing customer, driver, and ride numbers. |
 | Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, ride status changes, matching, persistence, authentication handoff, and payment integration must work reliably. |
 | Security and data protection (`C_5`) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
@@ -641,19 +641,21 @@ mobile app/frontend is separated from the backend so that user
 interaction stays independent from business logic. The backend monolith
 contains the core business capabilities and is deployed as one
 application to keep operation simple for the startup. MySQL is separated
-as the persistent data store. Authentication and payment are delegated
-to external providers because they are security-critical and costly to
-implement from scratch.
+as the persistent data store. Payment requests are first written to an
+internal durable message queue and then processed by a payment worker.
+Authentication and payment execution are delegated to external providers
+because they are security-critical and costly to implement from scratch.
 
 ### Contained Building Blocks and Important External Systems
 
 | Name | Type | Responsibility | Interfaces | Fulfilled Requirements |
 |------|------|----------------|------------|------------------------|
 | youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, driver verification, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
-| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to external providers, internal database connection to MySQL. | `REQ_1` to `REQ_11` |
+| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to the authentication provider, durable payment queue access, and internal database connection to MySQL. | `REQ_1` to `REQ_11` |
 | MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_5`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
+| Internal Payment Message Queue | Contained building block | Durably stores payment requests, retry metadata, and idempotency information until the payment worker can process them. | Internal durable queue channel used by Payment Integration and the Payment Worker. | `REQ_9`, `BG_2`, `QG_1` |
 | External Auth Provider | External system | Handles registration, login, authentication, and token issuing for customer, driver, and internal users. | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect. | `REQ_1` |
-| Stripe Payment Provider | External system | Processes ride payments and returns payment status and transaction references. | HTTPS / Stripe API. | `REQ_9`, `BG_2` |
+| Stripe Payment Provider | External system | Processes queued ride payments and returns payment status and transaction references. | HTTPS / Stripe API used by the payment worker. | `REQ_9`, `BG_2` |
 
 ### Important Interfaces
 
@@ -662,7 +664,8 @@ implement from scratch.
 | Frontend REST API | Main interface for registration handoff, ride search, booking, cancellation, completion, ride history, administration, and reporting requests. |
 | Live Tracking Channel | WebSocket/TLS channel for active ride status and live GPS updates between frontend and backend. |
 | Authentication Provider API | External interface used by the backend to validate user identity and authentication tokens. |
-| Stripe API | External payment interface used by the backend to process ride payments and store payment references. |
+| Payment Queue | Internal durable queue used to store payment requests before provider communication and to support retries after temporary failures. |
+| Stripe API | External payment interface used by the payment worker to process queued ride payments and retrieve payment references. |
 | Database Access | Internal persistence interface between backend monolith and MySQL. |
 
 ## Level 2
@@ -691,7 +694,7 @@ for the MVP architecture or outside the youRide implementation scope.
 | Driver Management & Verification | Manages driver profile data, driver availability, and driver verification status before drivers can offer rides. | Identity / Auth Integration, Ride Management & Matching, Administration & Reporting, Persistence |
 | Ride Management & Matching | Handles ride requests, automatic driver matching, calculated prices, ride status transitions, cancellation, completion, and ride history. | Customer Management, Driver Management & Verification, Live Tracking, Payment Integration, Persistence |
 | Live Tracking | Processes live GPS updates and distributes active ride status and location updates to customer and driver. | Ride Management & Matching, Mobile App / Frontend |
-| Payment Integration | Integrates with Stripe for ride payments and stores payment references and payment status. | Ride Management & Matching, Stripe Payment Provider, Persistence |
+| Payment Integration | Creates durable payment requests, writes them to the internal payment queue, coordinates the payment worker, and stores payment references and payment status. | Ride Management & Matching, Internal Payment Message Queue, Stripe Payment Provider, Persistence |
 | Administration & Reporting | Supports founder/admin operations, driver verification decisions, ride inspection, basic revenue data, commission reporting, and cost overview. | Driver Management & Verification, Ride Management & Matching, Payment Integration, Persistence |
 | Persistence | Provides database access for the backend modules and isolates MySQL access from business logic. | MySQL Database, all backend modules |
 
@@ -742,7 +745,7 @@ external building blocks.
 | Price Calculation | Calculates the ride price before booking and provides the price used for the later payment request. | Ride Application Service, Persistence |
 | Ride Status Policy | Validates allowed status transitions, for example from `requested` to `accepted` or from `in progress` to `completed`. | Ride Aggregate, Ride Application Service |
 | Ride Repository Port | Defines persistence operations for ride requests, status changes, prices, payment references, and ride history. | Persistence, MySQL Database |
-| Payment Handoff | Coordinates ride completion with Payment Integration so that Stripe payment processing is triggered before the ride is finally stored as completed. | Payment Integration, Ride Application Service |
+| Payment Handoff | Coordinates ride completion with Payment Integration so that the payment request is durably queued before the ride is finally stored as completed. | Payment Integration, Ride Application Service |
 
 ### Important Interfaces
 
@@ -753,7 +756,7 @@ external building blocks.
 | `acceptRide(rideId, driverId)` | Validates the assigned driver and changes the ride status to `accepted`. |
 | `startRide(rideId)` | Changes the ride status to `in progress` when the ride begins. |
 | `cancelRide(rideId, actorId)` | Cancels a ride when the current status allows cancellation. |
-| `completeRide(rideId)` | Completes a ride after payment processing has been triggered through Payment Integration. |
+| `completeRide(rideId)` | Completes a ride after the payment request has been durably queued through Payment Integration. |
 | `getRideHistory(userId)` | Returns completed or cancelled rides for customer or driver history views. |
 
 ### Ride Status Transitions
@@ -764,14 +767,15 @@ external building blocks.
 | `requested` | Customer or system cancels before acceptance. | `cancelled` | No payment is processed. |
 | `accepted` | Driver and customer start the ride. | `in progress` | Live tracking continues through the Live Tracking module. |
 | `accepted` | Customer or driver cancels before the ride starts. | `cancelled` | Cancellation is stored for ride history and reporting. |
-| `in progress` | Ride reaches the destination and payment is processed. | `completed` | Payment Integration stores the Stripe payment reference. |
+| `in progress` | Ride reaches the destination and the payment request is durably queued. | `completed` | Payment status can remain `pending` or `retrying` until the payment worker stores the Stripe payment reference. |
 | `in progress` | Exceptional cancellation during the ride. | `cancelled` | Requires business rules for later refinement. |
 
 ### Quality and Risk Notes
 
 -   Supports `REQ_3` to `REQ_10`, `QG_1`, `QG_2`, and `QG_3`.
 -   Direct database access is avoided through the Ride Repository Port.
--   Payment details are delegated to Payment Integration and Stripe.
+-   Payment details are delegated to Payment Integration, the internal
+    payment queue, the payment worker, and Stripe.
 -   The module must be kept cohesive because it is a major risk area for
     monolith complexity and scaling limitations.
 
@@ -906,23 +910,34 @@ Notable aspects:
 3. Identity / Auth Integration validates the authenticated user.
 4. Ride Management & Matching checks that the ride is currently `in
    progress` and can be completed.
-5. Payment Integration sends the payment request to Stripe with the ride
-   price and payment references.
-6. Stripe returns the payment status and transaction reference.
-7. Payment Integration stores the payment reference and result through
-   Persistence.
-8. Ride Management & Matching changes the ride status to `completed`.
-9. Persistence stores the completed ride, final status, and data needed
-   for ride history and controlling reports.
-10. The frontend shows the completed ride and payment result to customer
-    and driver.
+5. Payment Integration creates a payment request with the ride price,
+   payment references, retry metadata, and an idempotency key.
+6. Payment Integration writes the payment request to the internal durable
+   payment queue.
+7. Ride Management & Matching changes the ride status to `completed`
+   after the queue confirms durable storage of the payment request.
+8. Persistence stores the completed ride, final ride status, payment
+   status `pending`, and data needed for ride history and controlling
+   reports.
+9. The payment worker reads the queued payment request and calls Stripe
+   through HTTPS / Stripe API with the idempotency key.
+10. Stripe returns the payment status and transaction reference, or the
+    payment worker keeps the request queued for retry after temporary
+    network or provider errors.
+11. Payment Integration stores the final payment reference and payment
+    status through Persistence.
+12. The frontend shows the completed ride and the current payment status
+    to customer and driver.
 
 Notable aspects:
 
 -   The scenario supports `REQ_9`, `REQ_10`, and `BG_2`.
 -   Stripe is the only external payment system in the MVP.
--   Payment result, ride status, and reporting data are persisted
-    together to support ride history and commission reporting.
+-   The ride can be completed after the payment request is durably
+    queued; the payment status can remain `pending` or `retrying` until
+    the payment worker receives a final Stripe result.
+-   Payment result, ride status, and reporting data are persisted to
+    support ride history and commission reporting.
 
 <div style="page-break-after: always;"></div>
 
@@ -1016,7 +1031,7 @@ constraint `C_3`.
 |-------------|----------------|---------|
 | Development | Local developer machines with local or test database instances. | Implementation, local testing, and debugging by the three entrepreneurs/developers. |
 | Test / Staging | Separate staging setup on the rented Linux server, isolated from production by configuration, database/schema, ports, and access rules. | Integration testing, deployment rehearsal, and acceptance checks before production releases. |
-| Production | Rented Linux server with Nginx, Java backend monolith, MySQL database, and backup tooling. | Productive use by customers, drivers, founding team, and controlling. |
+| Production | Rented Linux server with Nginx, Java backend monolith, payment worker, internal payment message queue, MySQL database, and backup tooling. | Productive use by customers, drivers, founding team, and controlling. |
 
 ### Motivation
 
@@ -1024,9 +1039,11 @@ The deployment structure favors low cost and operational simplicity. All
 productive server-side components run on one rented Linux server during
 the MVP phase. Nginx acts as reverse proxy and TLS termination point.
 The Java backend monolith and MySQL database run on the same server to
-avoid additional infrastructure cost and complexity. External
-authentication and Stripe remain outside the rented server and are
-reached through HTTPS.
+avoid additional infrastructure cost and complexity. The internal
+payment message queue and payment worker also run on this server during
+the MVP phase so payment requests survive temporary network or provider
+failures. External authentication and Stripe remain outside the rented
+server and are reached through HTTPS.
 
 Customers and drivers use the mobile app. Internal administration and
 controlling can be accessed through a browser-based frontend served by
@@ -1037,9 +1054,9 @@ experience mobile-first while still allowing efficient internal work.
 
 | Concern | Infrastructure Measure |
 |---------|------------------------|
-| Cost efficiency | One rented Linux server hosts Nginx, backend, database, and staging/production setups for the MVP. |
+| Cost efficiency | One rented Linux server hosts Nginx, backend, payment worker, payment queue, database, and staging/production setups for the MVP. |
 | Security | Public access is routed through Nginx with TLS. Administrative access is restricted, e.g. via SSH and limited network access. |
-| Reliability | Automated backups are created for the MySQL database, application configuration, and relevant deployment artifacts. |
+| Reliability | Payment requests are stored in a durable internal queue before Stripe communication. Automated backups are created for the MySQL database, application configuration, and relevant deployment artifacts. |
 | Recoverability | Backups are encrypted and copied to external off-server storage. Restore tests are performed regularly to verify that backups can actually be used. |
 | Scalability path | If the rented server becomes insufficient, selected parts can later move to cloud services while the rented server remains available for backup purposes. |
 
@@ -1052,10 +1069,12 @@ experience mobile-first while still allowing efficient internal work.
 | youRide Mobile App / Frontend | Customer and driver mobile devices; internal browser clients for administration and controlling. | Mobile-first client for customers and drivers. Browser access is used for internal admin/reporting workflows. |
 | Nginx Reverse Proxy | Rented Linux server | Handles HTTPS entry point, TLS termination, reverse proxying to the Java backend, and serving browser-based frontend assets if needed. |
 | youRide Backend Monolith | Rented Linux server | Java application deployed as one backend artifact. |
+| Payment Worker | Rented Linux server, initially as part of or next to the Java backend deployment | Processes queued payment requests, calls Stripe with retries and idempotency keys, and stores final payment status. |
+| Internal Payment Message Queue | Rented Linux server | Durably stores payment requests and retry metadata until the payment worker can process them. |
 | MySQL Database | Rented Linux server | Stores customer, driver, ride, payment reference, and reporting data. |
 | Backup tooling | Rented Linux server plus external off-server backup storage | Creates encrypted database and configuration backups and copies them away from the production server. |
 | External Auth Provider | External provider infrastructure | Used through HTTPS for authentication and identity management. |
-| Stripe Payment Provider | Stripe infrastructure | Used through HTTPS / Stripe API for ride payments. |
+| Stripe Payment Provider | Stripe infrastructure | Used through HTTPS / Stripe API by the payment worker for ride payments. |
 
 ## Infrastructure Level 2
 
@@ -1073,6 +1092,8 @@ MVP phase.
 |------------------------|----------------|
 | Nginx | Public HTTPS endpoint, reverse proxy to the backend, TLS handling, optional serving of browser-based frontend assets. |
 | Java Backend Monolith | Executes youRide business logic, REST API, WebSocket/TLS tracking endpoint, provider integrations, and internal module logic. |
+| Payment Worker | Processes durable payment queue messages, calls Stripe with retry and idempotency handling, and writes final payment status. |
+| Internal Payment Message Queue | Durable local queue for payment requests that must survive temporary network, provider, or backend processing errors. |
 | MySQL Database | Persistent storage for application data. |
 | Backup tooling | Automated encrypted backups of database, configuration, and deployment-relevant files. |
 | Monitoring / operational scripts | Basic health checks, log inspection, deployment support, and operational maintenance by the DevOps/network employee. |
@@ -1219,7 +1240,8 @@ executing protected operations.
 | Test security-critical paths | Authentication, authorization, payment handoff, and admin access are covered by penetration tests. |
 
 Affected building blocks: Mobile App / Frontend, Backend Monolith,
-External Auth Provider, Stripe Payment Provider, Nginx.
+External Auth Provider, Internal Payment Message Queue, Payment Worker,
+Stripe Payment Provider, Nginx.
 
 ## Testing Concept
 
@@ -1239,8 +1261,9 @@ handoff, deployment, and backup recovery.
 
 Affected building blocks: Mobile App / Frontend, Backend Monolith,
 Identity/Auth Integration, Ride Management & Matching, Live Tracking,
-Payment Integration, Persistence, MySQL Database, External Auth Provider,
-Stripe Payment Provider, Backup tooling, Deployment infrastructure.
+Payment Integration, Internal Payment Message Queue, Payment Worker,
+Persistence, MySQL Database, External Auth Provider, Stripe Payment
+Provider, Backup tooling, Deployment infrastructure.
 
 ## GDPR-oriented Data Governance
 
@@ -1258,8 +1281,8 @@ beginning.
 | Backup awareness | Backups contain personal data and must therefore be encrypted and handled according to the same governance principles. |
 
 Affected building blocks: Backend Monolith, MySQL Database, Backup
-tooling, Administration & Reporting, External Auth Provider, Stripe
-Payment Provider.
+tooling, Administration & Reporting, External Auth Provider, Internal
+Payment Message Queue, Payment Worker, Stripe Payment Provider.
 
 ## Error Handling and Logging
 
@@ -1277,7 +1300,8 @@ team can detect and fix problems quickly.
 | Support monitoring | Logs and health checks support the DevOps/network employee in detecting production issues. |
 
 Affected building blocks: Backend Monolith, Nginx, MySQL Database,
-External Auth Provider, Stripe Payment Provider.
+External Auth Provider, Internal Payment Message Queue, Payment Worker,
+Stripe Payment Provider.
 
 <div style="page-break-after: always;"></div>
 
@@ -1538,7 +1562,7 @@ development and operation.
 |----------|-----------------------|---------------------------------|-------------|-------------------|
 | 1 | Monolith can become too complex | `AD_1`, `QG_3` | The modular monolith is good for the MVP, but the code base can become difficult to understand and change when features, modules, and dependencies grow. | Keep module boundaries explicit, review dependencies regularly, and avoid direct access to implementation details of other modules. |
 | 2 | Single rented server as bottleneck and single point of failure | `AD_2`, `C_1`, `C_3` | Backend, MySQL, Nginx, and production infrastructure run on one rented Linux server during the MVP. A server failure or overload can affect the whole system. | Monitor server resources, define migration triggers, keep backups off-server, and prepare a later cloud scaling path. |
-| 3 | External provider dependency for authentication and payment | `AD_3`, `AD_4` | youRide depends on the availability, pricing, API stability, and terms of the external authentication provider and Stripe. Provider problems can block login or payment workflows. | Keep provider integrations isolated, log provider failures, document fallback procedures, and store external transaction references consistently. |
+| 3 | External provider dependency for authentication and payment | `AD_3`, `AD_4` | youRide depends on the availability, pricing, API stability, and terms of the external authentication provider and Stripe. Provider problems can block login and can delay final payment confirmation. | Keep provider integrations isolated, queue payment requests durably, use retries and idempotency keys, log provider failures, document fallback procedures, and store external transaction references consistently. |
 | 4 | GDPR and privacy risk for sensitive data | `C_5`, `QS_PRIV_1` | Customer profiles, driver profiles, location data, ride history, and payment references are sensitive personal data. Wrong access, excessive storage, or unsafe logs can create legal and trust problems. | Apply GDPR-oriented data governance, role-based access control, data minimization, retention/deletion rules, encrypted backups, and logging rules that avoid sensitive data. |
 | 5 | Monolithic architecture is limited for scaling | `AD_1`, `QG_3`, `QS_SCAL_1` | A monolith cannot scale individual business capabilities independently. If only live tracking, matching, or payment integration becomes heavily loaded, the whole backend must initially be scaled together. | Keep the monolith modular, monitor load by module or use case where possible, and use the cloud migration path when the rented server is no longer sufficient. |
 | 6 | Backup and restore risk | `C_3`, Deployment View | Backups are only useful if they are complete, encrypted, stored away from the production server, and restorable. Without restore tests, the team might discover backup problems too late. | Automate database and configuration backups, copy them to off-server storage, define retention, and perform regular restore tests. |
@@ -1612,6 +1636,7 @@ documentation.
 | GDPR-oriented Data Governance | youRide concept that applies GDPR principles to customer, driver, ride, location, payment reference, log, and backup data. |
 | HTTPS | Encrypted HTTP communication used for frontend-backend communication and external provider APIs. |
 | Identity / Auth Integration | Backend module that integrates with the external authentication provider and maps authenticated users to roles. |
+| Internal Payment Message Queue | Durable internal queue that stores payment requests, retry metadata, and idempotency information before the payment worker communicates with Stripe. |
 | Integration Test | Test that checks whether several system parts or external integrations work together correctly. |
 | Java | Programming language chosen for the youRide backend monolith. |
 | Live GPS | Regular location information sent by the driver during an active ride. |
@@ -1625,8 +1650,11 @@ documentation.
 | Nginx | Reverse proxy on the rented Linux server that handles HTTPS entry, TLS termination, reverse proxying, and optional frontend asset delivery. |
 | OAuth 2.0 / OpenID Connect | Standard authentication and authorization protocols assumed for the external authentication provider integration. |
 | Off-server Backup Storage | Backup storage outside the production server, used so that a server failure does not destroy all backups. |
-| Payment Integration | Backend module that integrates with Stripe, stores payment references, and handles payment status. |
+| Payment Integration | Backend module that creates durable payment requests, coordinates queued payment processing, stores payment references, and handles payment status. |
+| Payment Queue | Short name for the internal payment message queue used for reliable queued payment handoff. |
 | Payment Reference | Stored reference to an external payment transaction, used for ride history, reconciliation, and reporting. |
+| Payment Status | State of a payment, for example `pending`, `retrying`, `confirmed`, or `failed`, tracked separately from the ride status. |
+| Payment Worker | Background component that consumes queued payment requests, calls Stripe with retries and idempotency keys, and stores the resulting payment status and transaction reference. |
 | Penetration Test | Security test that attempts to find vulnerabilities in authentication, authorization, payment handoff, admin access, and other security-critical paths. |
 | Persistence | Backend module or repository layer that isolates database access from business logic. |
 | Production Environment | Productive infrastructure used by real customers, drivers, founding team, and controlling. |

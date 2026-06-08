@@ -5,7 +5,7 @@ graph TD
     MapsAPI([External Maps API])
     GPSAPI([External GPS API])
 
-    subgraph "RideShare Bounded Contexts (Solution Space)"
+    subgraph "youRide Bounded Contexts (Solution Space)"
         
         %% Contexts
         BC_Ride[["Ride Management Context"]]
