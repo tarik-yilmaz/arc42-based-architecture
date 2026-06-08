@@ -449,7 +449,9 @@ The MVP uses simple and well-known technical interfaces to keep
 implementation and operation manageable for the small team. Normal app
 operations use HTTPS/REST. Live ride tracking uses WebSocket
 communication because both driver and customer need timely location and
-status updates during an active ride.
+status updates during an active ride. Payment processing is decoupled
+through an internal durable message queue so that temporary network
+errors, Stripe outages, or backend retries do not lose payment requests.
 
 | Technical Interface | Communication Partner / Target | Channel / Protocol | Purpose |
 |---------------------|--------------------------------|--------------------|---------|
@@ -457,7 +459,8 @@ status updates during an active ride.
 | Live tracking channel | youRide backend monolith | WebSocket over TLS | Driver and customer live location updates and ride status changes during an active ride. |
 | Backend to database | MySQL database | Internal database connection on the rented Linux server or private network | Store and read customer profiles, driver profiles, rides, ride status, prices, payment references, and reporting data. |
 | Backend to authentication provider | External authentication provider | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect | Register users, authenticate users, and validate identity information. |
-| Backend to Stripe | Stripe payment provider | HTTPS / Stripe API | Process payments, retrieve payment status, and store payment references for ride commissions. |
+| Backend to payment queue | Internal payment message queue | Durable internal queue, for example AMQP / RabbitMQ or a comparable managed queue | Store payment requests reliably before provider communication, so payments can be retried after temporary network, provider, or backend errors. |
+| Payment worker to Stripe | Stripe payment provider | HTTPS / Stripe API with retries and idempotency keys | Process queued payment requests, retrieve payment status, and store payment references for ride commissions. |
 | DevOps access | Rented Linux server | Secure administrative access, e.g. SSH via restricted network access | Deployment, monitoring, backup handling, and operational maintenance. |
 
 The detailed physical deployment of the rented server, database,
@@ -471,7 +474,8 @@ deployment view.
 | Registration, ride search, booking, cancellation, completion, ride history | Mobile app to backend via HTTPS/REST. |
 | Live GPS location and active ride status | WebSocket over TLS between mobile app and backend. |
 | Authentication result and user identity | Backend to external authentication provider via HTTPS. |
-| Payment request, payment confirmation, transaction reference | Backend to Stripe via HTTPS / Stripe API. |
+| Payment request and retry state | Backend to internal payment message queue through a durable queue channel. |
+| Payment confirmation and transaction reference | Payment worker to Stripe via HTTPS / Stripe API, with the result persisted in youRide. |
 | Stored customer, driver, ride, price, payment, and reporting data | Backend to MySQL via internal database connection. |
 
 <div style="page-break-after: always;"></div>
