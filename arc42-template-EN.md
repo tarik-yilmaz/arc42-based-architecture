@@ -1585,6 +1585,7 @@ documentation.
 | Authentication Token | Digital proof issued by the external authentication provider and validated by the backend before protected operations are executed. |
 | Automatic Driver Matching | youRide functionality that selects a suitable verified and available driver for a customer ride request. |
 | Backup | Copy of database, configuration, and deployment-relevant files used for recovery after data loss or server failure. |
+| Backend | Server-side part of youRide that provides business logic, APIs, integration with external providers, persistence access, and operational functionality. |
 | Backend Monolith | Java backend application that contains the central youRide business logic and is deployed as one artifact. |
 | Booking | Customer action that requests a ride and triggers price calculation, driver matching, and ride creation. |
 | Browser-based Frontend | Internal web access used by administration and controlling for operational workflows. |
@@ -1601,6 +1602,7 @@ documentation.
 | Driver Management & Verification | Backend module that manages driver profile data, availability, and verification status. |
 | Driver Verification | Process in which the company checks and approves a driver before the driver can offer rides on the platform. |
 | External Auth Provider | External service used for registration, login, authentication, and token issuing. |
+| Frontend | User-facing part of youRide that presents customer, driver, administration, and controlling workflows and communicates with the backend through APIs. |
 | Frontend REST API | HTTPS/REST interface used by the mobile app/frontend for normal application commands such as search, booking, cancellation, completion, history, administration, and reporting. |
 | GDPR | General Data Protection Regulation; legal basis for youRide's privacy and data governance decisions. |
 | GDPR-oriented Data Governance | youRide concept that applies GDPR principles to customer, driver, ride, location, payment reference, log, and backup data. |
