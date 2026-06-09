@@ -171,10 +171,6 @@ with them.
 | External maps/geocoding/routing provider | Route, distance, ETA, geocoding, reverse geocoding, and map display data. | Pickup and destination addresses or coordinates and the minimum location data needed for map, route, ETA, and geocoding requests. |
 <br><br>
 
-There are no additional external business partners such as authorities,
-insurance providers, or transportation agencies in the MVP scope.
-<br><br>
-
 ## Technical Context
 <br>
 
@@ -247,9 +243,9 @@ decisions.
 # Building Block View
 <br>
 
-## Whitebox Overall System
+## Level 1
 
-### Overview Diagram
+### Whitebox Overall System
 
 The Level 1 diagram shows youRide as a complete system with mobile app/frontend, backend
 monolith, database, internal payment queue, and external providers for
@@ -420,7 +416,7 @@ blocks.
     payment queue, the payment worker, and Stripe.
 -   The module must be kept cohesive because it is a major risk area for
     monolith complexity and scaling limitations.
-<br><br>
+<br><br><br>
 
 # Runtime View
 
@@ -722,7 +718,7 @@ backup approach for this setup is:
 
 This keeps the setup affordable while reducing the risk that a server
 failure also destroys all backups.
-<br><br>
+<br><br><br>
 
 # Cross-cutting Concepts
 
@@ -843,12 +839,11 @@ needed so that the small team can detect and fix problems quickly.
 Affected building blocks: Backend Monolith, Nginx, MySQL Database,
 External Auth Provider, Internal Payment Message Queue, Payment Worker,
 Stripe Payment Provider, External Maps/Geocoding/Routing Provider.
-<br><br>
+<br><br><br>
 
 # Architecture Decisions
 
-The following decisions document the most important architecture choices
-that stakeholders must be able to understand and trace.
+The following decisions document the most important architecture choices.
 <br><br>
 
 | ID | Status | Problem / Context | Considered Alternatives | Decision and Rationale | Consequences |
