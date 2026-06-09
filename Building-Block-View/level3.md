@@ -1,124 +1,70 @@
-    classDiagram
-        %% Level 3: White Box Ride Management & Matching
-        %% Focus: ride lifecycle, automatic matching, pricing, payment handoff.
+@startuml
+title Ride Management & Matching (Level 3 White Box)
 
-        class RideStatus {
-            <<enumeration>>
-            REQUESTED
-            ACCEPTED
-            IN_PROGRESS
-            COMPLETED
-            CANCELLED
-        }
+allowmixing
 
-        class PaymentStatus {
-            <<enumeration>>
-            PENDING
-            RETRYING
-            CONFIRMED
-            FAILED
-        }
+skinparam componentStyle rectangle
+left to right direction
 
-        class Location {
-            <<Value Object>>
-            +double latitude
-            +double longitude
-        }
+' External Inbound Interface
+() "Ride Actions" as Actions
 
-        class Money {
-            <<Value Object>>
-            +decimal amount
-            +String currency
-        }
+' Outer Component Boundary Block
+component "Ride Management & Matching" as RideComponent #LightYellow {
 
-        class Ride {
-            <<Aggregate Root>>
-            -UUID id
-            -UUID customerId
-            -UUID driverId
-            -Location pickup
-            -Location destination
-            -Money price
-            -String paymentReference
-            -PaymentStatus paymentStatus
-            -RideStatus status
-            +assignDriver(UUID driverId) void
-            +accept() void
-            +start() void
-            +cancel() void
-            +complete() void
-            +recordPaymentResult(String paymentReference, PaymentStatus status) void
-        }
+    class RideApplicationService {
+        
+repository :RideRepositoryPort
+matchingService :MatchingService
+    
+statusPolicy :RideStatusPolicy+ searchRides(pickup, destination) : RideOption[]+ requestRide(customerId, pickup, destination) : UUID+ acceptRide(rideId, driverId) : void+ completeRide(rideId) : void
+}
 
-        class RideApplicationService {
-            <<Application Service>>
-            -RideRepositoryPort repository
-            -MatchingService matchingService
-            -PriceCalculation priceCalculation
-            -RideStatusPolicy statusPolicy
-            -PaymentHandoff paymentHandoff
-            +searchRides(Location pickup, Location destination, DateTime time) RideOption[]
-            +requestRide(UUID customerId, Location pickup, Location destination, DateTime time) UUID
-            +acceptRide(UUID rideId, UUID driverId) void
-            +startRide(UUID rideId) void
-            +cancelRide(UUID rideId, UUID actorId) void
-            +completeRide(UUID rideId) void
-            +getRideHistory(UUID userId) Ride[]
-        }
+class Ride <<Aggregate Root>> {
+    
+id :UUID
+customerId :UUID
+driverId :UUID
+paymentReference :String
+paymentStatus :PaymentStatus
+status :RideStatus
++ assignDriver(driverId) : void+ accept() : void+ complete() : void
+}
 
-        class MatchingService {
-            <<Domain Service>>
-            -DriverVerificationPort driverVerification
-            +matchDriver(Location pickup, DateTime time) UUID
-        }
+class Location <<Value Object>> {
+    + latitude :double
+    + longitude :double
+}
 
-        class PriceCalculation {
-            <<Domain Service>>
-            +calculatePrice(Location pickup, Location destination, DateTime time) Money
-        }
+class Money <<Value Object>> {
+    + amount :decimal
+    + currency :String
+}
 
-        class RideStatusPolicy {
-            <<Domain Policy>>
-            +canAccept(Ride ride, UUID driverId) boolean
-            +canStart(Ride ride) boolean
-            +canCancel(Ride ride, UUID actorId) boolean
-            +canComplete(Ride ride) boolean
-        }
+class MatchingService {
+    + matchDriver(pickup, time) : UUID
+}
 
-        class PaymentHandoff {
-            <<Application Service>>
-            -PaymentIntegrationPort paymentIntegration
-            +queueRidePayment(Ride ride) void
-        }
+class RideStatusPolicy {+ canAccept(ride, driverId) : boolean+ canComplete(ride) : boolean}
+}
 
-        class RideRepositoryPort {
-            <<interface / Port>>
-            +save(Ride ride) void
-            +findById(UUID rideId) Ride
-            +findHistoryByUser(UUID userId) Ride[]
-        }
+' External Outbound Target Component
+component "Persistence Module" as Persistence #LightGray
 
-        class DriverVerificationPort {
-            <<interface / Port>>
-            +findVerifiedAvailableDrivers(Location pickup, DateTime time) UUID[]
-        }
+' --- Connections ---
 
-        class PaymentIntegrationPort {
-            <<interface / Port>>
-            +queuePayment(UUID rideId, Money amount) void
-        }
+' Inbound port routing
+Actions ..> RideApplicationService : "execute-command"
 
-        Ride "1" *-- "1" RideStatus : has
-        Ride "1" *-- "1" PaymentStatus : has
-        Ride "1" *-- "2" Location : uses
-        Ride "1" *-- "1" Money : has
+' Internal orchestration links
+RideApplicationService --> MatchingService
+RideApplicationService --> RideStatusPolicy
+RideApplicationService ..> Ride : "orchestrates"
 
-        RideApplicationService --> RideRepositoryPort : stores and loads rides
-        RideApplicationService --> MatchingService : selects driver
-        RideApplicationService --> PriceCalculation : calculates price
-        RideApplicationService --> RideStatusPolicy : validates transitions
-        RideApplicationService --> PaymentHandoff : triggers payment on completion
-        RideApplicationService ..> Ride : orchestrates
+' Multiplicity compositions
+Ride "1" -- "2" Location : "pickup / destination"
+Ride "1"-- "1" Money : "calculated price"
 
-        MatchingService --> DriverVerificationPort : asks for verified drivers
-        PaymentHandoff --> PaymentIntegrationPort : queues payment request
+' Outbound boundary path
+RideComponent ..> Persistence : "Save / Load \n(RideRepositoryPort)"
+@enduml
