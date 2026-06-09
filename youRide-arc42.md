@@ -238,8 +238,9 @@ decisions.
 | Fast market entry and low operating costs (`BG_1`, `BG_3`, `C_1`, `C_2`) | Build the MVP as a modular monolith. The system is deployed as one backend application, but internally structured into clear modules such as identity, ride management, payment integration, tracking, and administration. | A modular monolith keeps deployment and operations simple for the small team while still supporting maintainability through internal boundaries. |
 | Familiar and productive technology stack | Use Java for the backend monolith, Angular for the frontend, MySQL for persistence, REST APIs for normal app communication, and WebSocket communication for live tracking. | These technologies are established, affordable, and suitable for the planned MVP scope. They also support the chosen client-server and monolithic architecture. |
 | External authentication and payment (`REQ_1`, `REQ_4`, `REQ_9`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. Payment requests are handed off through an internal durable queue before Stripe communication. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup, while queued payment handoff reduces the effect of temporary network or provider errors. |
+| External maps, geocoding, and routing (`REQ_3`, `REQ_4`, `REQ_5`, `REQ_7`, `AD_5`, `C_2`) | Use an external maps/geocoding/routing provider through a replaceable integration for map display, geocoding, reverse geocoding, route distance, and ETA data. | Building and operating map, routing, and geocoding data is too expensive for the MVP. Keeping the provider behind an integration preserves youRide ownership of matching, price calculation rules, and live tracking state while reducing implementation effort. |
 | Cost-efficient deployment and later scalability (`QG_3`, `C_1`, `C_3`) | Start on a rented Linux server. When demand grows, add cloud services for scaling while keeping the rented server available for backup purposes. | This keeps initial costs low but leaves a realistic growth path for increasing customer, driver, and ride numbers. |
-| Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, ride status changes, matching, persistence, authentication handoff, and payment integration must work reliably. |
+| Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, route and ETA handling, ride status changes, matching, persistence, authentication handoff, maps/routing integration, and payment integration must work reliably. |
 | Security and data protection (`C_5`) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
 <br><br>
 
@@ -250,10 +251,9 @@ decisions.
 
 ### Overview Diagram
 
-The Level 1 overview diagram is maintained in `building-blocks.puml`.
-It shows youRide as a complete system with mobile app/frontend, backend
-monolith, database, and the two external providers for authentication
-and payment.
+The Level 1 diagram shows youRide as a complete system with mobile app/frontend, backend
+monolith, database, internal payment queue, and external providers for
+authentication, payment, and maps/geocoding/routing.
 <br><br>
 
 ![level1](./resource/level1.png)
@@ -271,8 +271,9 @@ application to keep operation simple for the startup. MySQL is separated
 as the persistent data store. Payment requests are first written to an
 internal durable message queue and then processed by a payment worker.
 
-Authentication and payment execution are delegated to external providers
-because they are security-critical and costly to implement from scratch.
+Authentication, payment execution, and maps/geocoding/routing data are
+delegated to external providers because they are security-critical or
+costly to implement from scratch.
 <br><br>
 
 ### Contained Building Blocks and Important External Systems
@@ -280,11 +281,12 @@ because they are security-critical and costly to implement from scratch.
 
 | Name | Type | Responsibility | Interfaces | Fulfilled Requirements |
 |------|------|----------------|------------|------------------------|
-| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, driver verification, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
-| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to the authentication provider, durable payment queue access, and internal database connection to MySQL. | `REQ_1` to `REQ_11` |
+| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, driver verification, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith; HTTPS / Maps API for map display where client-side map rendering is used. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
+| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to the authentication provider and maps/geocoding/routing provider, durable payment queue access, and internal database connection to MySQL. | `REQ_1` to `REQ_11` |
 | MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_5`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
 | Internal Payment Message Queue | Contained building block | Durably stores payment requests, retry metadata, and idempotency information until the payment worker can process them. | Internal durable queue channel used by Payment Integration and the Payment Worker. | `REQ_9`, `BG_2`, `QG_1` |
 | External Auth Provider | External system | Handles registration, login, authentication, and token issuing for customer, driver, and internal users. | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect. | `REQ_1` |
+| External Maps/Geocoding/Routing Provider | External system | Supplies map display data, geocoding, reverse geocoding, route distance, and ETA information for ride search, booking, pricing support, and live tracking usability. | HTTPS / Maps, Routing, and Geocoding APIs used by the backend and, where needed, by the mobile app/frontend. | `REQ_3`, `REQ_4`, `REQ_5`, `REQ_7`, `AD_5` |
 | Stripe Payment Provider | External system | Processes queued ride payments and returns payment status and transaction references. | HTTPS / Stripe API used by the payment worker. | `REQ_9`, `BG_2` |
 <br><br>
 
@@ -296,6 +298,7 @@ because they are security-critical and costly to implement from scratch.
 | Frontend REST API | Main interface for registration handoff, ride search, booking, cancellation, completion, ride history, administration, and reporting requests. |
 | Live Tracking Channel | WebSocket/TLS channel for active ride status and live GPS updates between frontend and backend. |
 | Authentication Provider API | External interface used by the backend to validate user identity and authentication tokens. |
+| Maps / Routing / Geocoding API | External interface used by the backend and, where needed, the mobile app/frontend to resolve pickup and destination locations, retrieve route distance and ETA, support reverse geocoding, and display map information. |
 | Payment Queue | Internal durable queue used to store payment requests before provider communication and to support retries after temporary failures. |
 | Stripe API | External payment interface used by the payment worker to process queued ride payments and retrieve payment references. |
 | Database Access | Internal persistence interface between backend monolith and MySQL. |
@@ -322,8 +325,8 @@ for the MVP architecture or outside the youRide implementation scope.
 | Identity / Auth Integration | Integrates with the external authentication provider, validates authentication tokens, and maps authenticated users to customer, driver, or internal roles. | External Auth Provider, Customer Management, Driver Management & Verification, Administration & Reporting |
 | Customer Management | Manages customer profile data and customer-specific ride access. | Identity / Auth Integration, Ride Management & Matching, Persistence |
 | Driver Management & Verification | Manages driver profile data, driver availability, and driver verification status before drivers can offer rides. | Identity / Auth Integration, Ride Management & Matching, Administration & Reporting, Persistence |
-| Ride Management & Matching | Handles ride requests, automatic driver matching, calculated prices, ride status transitions, cancellation, completion, and ride history. | Customer Management, Driver Management & Verification, Live Tracking, Payment Integration, Persistence |
-| Live Tracking | Processes live GPS updates and distributes active ride status and location updates to customer and driver. | Ride Management & Matching, Mobile App / Frontend |
+| Ride Management & Matching | Handles ride requests, automatic driver matching, calculated prices, ride status transitions, cancellation, completion, and ride history. | Customer Management, Driver Management & Verification, Live Tracking, Payment Integration, External Maps/Geocoding/Routing Provider, Persistence |
+| Live Tracking | Processes live GPS updates and distributes active ride status and location updates to customer and driver. | Ride Management & Matching, Mobile App / Frontend, External Maps/Geocoding/Routing Provider |
 | Payment Integration | Creates durable payment requests, writes them to the internal payment queue, coordinates the payment worker, and stores payment references and payment status. | Ride Management & Matching, Internal Payment Message Queue, Stripe Payment Provider, Persistence |
 | Administration & Reporting | Supports founder/admin operations, driver verification decisions, ride inspection, basic revenue data, commission reporting, and cost overview. | Driver Management & Verification, Ride Management & Matching, Payment Integration, Persistence |
 | Persistence | Provides database access for the backend modules and isolates MySQL access from business logic. | MySQL Database, all backend modules |
@@ -335,6 +338,7 @@ for the MVP architecture or outside the youRide implementation scope.
 |-----------|-------------|
 | Application API | REST endpoints exposed by the backend monolith for frontend use cases. |
 | Tracking API | WebSocket/TLS endpoint for live ride location and ride status updates. |
+| Maps / Routing / Geocoding API | External HTTPS interface used for geocoding, reverse geocoding, route distance, ETA, and map display support. |
 | Module-internal services | Internal Java service interfaces between backend modules. They keep module boundaries explicit inside the monolith. |
 | Repository interfaces | Internal persistence interfaces used by backend modules to access stored data through the Persistence module. |
 <br><br>
@@ -346,8 +350,8 @@ for the MVP architecture or outside the youRide implementation scope.
 Ride Management & Matching is refined on Level 3 because it is the core
 business module of youRide. It supports the most important MVP
 requirements: ride search, booking, automatic driver matching, ride
-status handling, cancellation, completion, ride history, and the payment
-handoff.
+status handling, cancellation, completion, ride history, maps/routing
+support for price calculation, and the payment handoff.
 <br><br>
 
 ![level3](./resource/level3.png)
@@ -360,9 +364,10 @@ This module must keep the ride lifecycle consistent. Customers and
 drivers must see the same ride state, price, and matching result. 
 
 The module also coordinates with Driver Management & Verification, Live
-Tracking, Payment Integration, and Persistence. Therefore, its internal
-structure is more relevant than the internal structure of simpler or
-external building blocks.
+Tracking, Payment Integration, the external maps/geocoding/routing
+provider, and Persistence. Therefore, its internal structure is more
+relevant than the internal structure of simpler or external building
+blocks.
 <br><br>
 
 ### Internal Building Blocks
@@ -372,7 +377,7 @@ external building blocks.
 | Ride Application Service | Orchestrates ride use cases such as search, request, accept, cancel, start, complete, and history access. | Application API, Ride Aggregate, Matching Service, Price Calculation, Ride Repository Port, Payment Integration |
 | Ride Aggregate | Represents one ride and protects ride invariants such as customer, driver, pickup, destination, price, payment reference, and current status. | Ride Application Service, Ride Status Policy |
 | Matching Service | Selects a suitable verified and available driver for a ride request. | Driver Management & Verification, Live Tracking, Ride Application Service |
-| Price Calculation | Calculates the ride price before booking and provides the price used for the later payment request. | Ride Application Service, Persistence |
+| Price Calculation | Calculates the ride price before booking based on business rules and route distance/ETA data, and provides the price used for the later payment request. | Ride Application Service, External Maps/Geocoding/Routing Provider, Persistence |
 | Ride Status Policy | Validates allowed status transitions, for example from `requested` to `accepted` or from `in progress` to `completed`. | Ride Aggregate, Ride Application Service |
 | Ride Repository Port | Defines persistence operations for ride requests, status changes, prices, payment references, and ride history. | Persistence, MySQL Database |
 | Payment Handoff | Coordinates ride completion with Payment Integration so that the payment request is durably queued before the ride is finally stored as completed. | Payment Integration, Ride Application Service |
@@ -384,7 +389,7 @@ external building blocks.
 | Interface / Operation | Description |
 |-----------------------|-------------|
 | `searchRides(...)` | Returns ride options or availability information for spontaneous or planned rides. |
-| `requestRide(customerId, pickup, destination, time)` | Creates a ride request, calculates a price, matches a driver, and stores the ride with status `requested`. |
+| `requestRide(customerId, pickup, destination, time)` | Creates a ride request, resolves route data, calculates a price, matches a driver, and stores the ride with status `requested`. |
 | `acceptRide(rideId, driverId)` | Validates the assigned driver and changes the ride status to `accepted`. |
 | `startRide(rideId)` | Changes the ride status to `in progress` when the ride begins. |
 | `cancelRide(rideId, actorId)` | Cancels a ride when the current status allows cancellation. |
@@ -408,6 +413,9 @@ external building blocks.
 
 -   Supports `REQ_3` to `REQ_10`, `QG_1`, `QG_2`, and `QG_3`.
 -   Direct database access is avoided through the Ride Repository Port.
+-   Route distance and ETA data are obtained through the external
+    maps/geocoding/routing provider, while price rules remain inside
+    youRide.
 -   Payment details are delegated to Payment Integration, the internal
     payment queue, the payment worker, and Stripe.
 -   The module must be kept cohesive because it is a major risk area for
@@ -436,12 +444,14 @@ critical Stripe interface.
    example with provider metadata and cached public keys.
 4. Ride Management & Matching validates the request data and asks Driver
    Management & Verification for verified and available drivers.
-5. Ride Management & Matching calculates the ride price and selects a
+5. Ride Management & Matching retrieves route distance and ETA data from
+   the external maps/geocoding/routing provider.
+6. Ride Management & Matching calculates the ride price and selects a
    suitable driver automatically.
-6. Persistence stores the ride request, calculated price, selected
+7. Persistence stores the ride request, calculated price, selected
    driver, and initial ride status.
-7. The backend returns the booking result to the frontend.
-8. The customer sees the calculated price, matched driver information,
+8. The backend returns the booking result to the frontend.
+9. The customer sees the calculated price, matched driver information,
    and current ride status.
 <br><br>
 
@@ -450,6 +460,9 @@ critical Stripe interface.
 -   The scenario supports `REQ_3`, `REQ_4`, and `REQ_5`.
 -   Authentication is external, but ride matching and price calculation
     remain core youRide functionality.
+-   Maps, route distance, and ETA data come from the external
+    maps/geocoding/routing provider, while the booking decision remains
+    inside youRide.
 -   The ride is stored before later status changes are processed, so the
     ride history and reporting data can be derived from persistent state.
 <br><br>
@@ -554,8 +567,8 @@ critical Stripe interface.
 
 **Notable aspects:**
 
--   The scenario supports `REQ_9`, `REQ_10`, `REQ_11`, `BG_2`, and
-    `QS_PRIV_1`.
+-   The scenario supports `REQ_9`, `REQ_10`, `REQ_11`, `BG_2`,
+    `QS_REL_1`, and `QS_PRIV_1`.
 -   The ride status remains `completed` even though the payment status is
     `failed`; this keeps the ride history and reporting data truthful.
 -   Permanent payment failures are not retried endlessly, which protects
@@ -593,8 +606,8 @@ critical Stripe interface.
 **Notable aspects:**
 
 
--   The scenario supports `REQ_9`, `REQ_10`, `BG_2`, and the mitigation
-    of external provider dependency risks.
+-   The scenario supports `REQ_9`, `REQ_10`, `BG_2`, `QS_REL_2`, and the
+    mitigation of external provider dependency risks.
 -   The ride remains `completed` while payment processing continues in
     the background, so the user workflow is not interrupted by temporary
     provider outages.
@@ -635,8 +648,8 @@ The Java backend monolith and MySQL database run on the same server to
 avoid additional infrastructure cost and complexity. The internal
 payment message queue and payment worker also run on this server during
 the MVP phase so payment requests survive temporary network or provider
-failures. External authentication and Stripe remain outside the rented
-server and are reached through HTTPS.
+failures. External authentication, Stripe, and the maps/geocoding/routing
+provider remain outside the rented server and are reached through HTTPS.
 
 Customers and drivers use the mobile app. Internal administration and
 controlling can be accessed through a browser-based frontend served by
@@ -671,6 +684,7 @@ experience mobile-first while still allowing efficient internal work.
 | MySQL Database | Rented Linux server | Stores customer, driver, ride, payment reference, and reporting data. |
 | Backup tooling | Rented Linux server plus external off-server backup storage | Creates encrypted database and configuration backups and copies them away from the production server. |
 | External Auth Provider | External provider infrastructure | Used through HTTPS for authentication and identity management. |
+| External Maps/Geocoding/Routing Provider | External provider infrastructure | Used through HTTPS / Maps, Routing, and Geocoding APIs by the backend and, where needed, the mobile app/frontend for map display, geocoding, reverse geocoding, route distance, and ETA data. |
 | Stripe Payment Provider | Stripe infrastructure | Used through HTTPS / Stripe API by the payment worker for ride payments. |
 <br><br>
 
@@ -754,7 +768,8 @@ executing protected operations.
 
 Affected building blocks: Mobile App / Frontend, Backend Monolith,
 External Auth Provider, Internal Payment Message Queue, Payment Worker,
-Stripe Payment Provider, Nginx.
+Stripe Payment Provider, External Maps/Geocoding/Routing Provider,
+Nginx.
 <br><br>
 
 ## Testing Concept
@@ -762,14 +777,15 @@ Stripe Payment Provider, Nginx.
 Testing is treated as a cross-cutting concept because the main MVP risks
 span several modules and external providers: price calculation, driver
 matching, ride status changes, live tracking, authentication, payment
-handoff, deployment, and backup recovery.
+handoff, payment retry/failure handling, maps/routing integration,
+deployment, and backup recovery.
 <br><br>
 
 | Rule | Explanation |
 |------|-------------|
 | Cover core business rules with unit tests | Price calculation, matching decisions, ride status transitions, cancellation rules, and payment reference handling are tested close to the backend modules that implement them. |
 | Verify module collaboration with integration tests | Backend module interfaces, persistence access, REST APIs, and WebSocket/TLS tracking flows are tested together so that the modular monolith behaves consistently as one application. |
-| Test external provider integration explicitly | Authentication and Stripe integration are tested with provider test modes, mocks, or contract-style checks so that the MVP does not depend on manual production checks. |
+| Test external provider integration explicitly | Authentication, Stripe, and maps/geocoding/routing integration are tested with provider test modes, mocks, or contract-style checks so that the MVP does not depend on manual production checks. |
 | Use staging for end-to-end and acceptance checks | The separate staging/test environment is used for complete customer, driver, admin, payment, and deployment rehearsal workflows before production releases. |
 | Include security and privacy tests | Authentication, authorization, admin access, payment handoff, logging, and handling of personal data are checked as part of regression and penetration testing. |
 | Validate operational recovery | Backups are not only created, but also verified through restore tests so that database and configuration recovery remain reliable. |
@@ -779,21 +795,23 @@ Affected building blocks: Mobile App / Frontend, Backend Monolith,
 Identity/Auth Integration, Ride Management & Matching, Live Tracking,
 Payment Integration, Internal Payment Message Queue, Payment Worker,
 Persistence, MySQL Database, External Auth Provider, Stripe Payment
-Provider, Backup tooling, Deployment infrastructure.
+Provider, External Maps/Geocoding/Routing Provider, Backup tooling,
+Deployment infrastructure.
 <br><br>
 
 ## GDPR-oriented Data Governance
 
 youRide handles personal data such as customer profiles, driver
-profiles, live location data, ride history, and payment references.
+profiles, live location data, ride history, payment references, and the
+location data required for map, geocoding, routing, and ETA requests.
 Therefore, data handling follows GDPR-oriented principles from the
 beginning.
 <br><br>
 
 | Rule | Explanation |
 |------|-------------|
-| Data minimization | Store only data that is needed for registration, rides, payment references, verification, history, reporting, and legal obligations. |
-| Purpose limitation | Use personal data only for the ride sharing service, payment processing, administration, reporting, and required operational purposes. |
+| Data minimization | Store only data that is needed for registration, rides, payment references, verification, history, reporting, and legal obligations. Send only the required location data to the maps/geocoding/routing provider. |
+| Purpose limitation | Use personal data only for the ride sharing service, map/routing support, payment processing, administration, reporting, and required operational purposes. |
 | Access control | Customer, driver, admin, and controlling access to data is restricted by role. |
 | Retention and deletion | Retention rules must be defined for profiles, ride history, location data, and payment references. Data that is no longer needed must be deleted or anonymized. |
 | Backup awareness | Backups contain personal data and must therefore be encrypted and handled according to the same governance principles. |
@@ -801,29 +819,30 @@ beginning.
 
 Affected building blocks: Backend Monolith, MySQL Database, Backup
 tooling, Administration & Reporting, External Auth Provider, Internal
-Payment Message Queue, Payment Worker, Stripe Payment Provider.
+Payment Message Queue, Payment Worker, Stripe Payment Provider,
+External Maps/Geocoding/Routing Provider.
 <br><br>
 
 ## Error Handling and Logging
 
 Errors can occur in user workflows, backend modules, database access,
-authentication, payment processing, and deployment operations. A
-consistent error handling and logging concept is needed so that the small
-team can detect and fix problems quickly.
+authentication, payment processing, maps/routing provider access, and
+deployment operations. A consistent error handling and logging concept is
+needed so that the small team can detect and fix problems quickly.
 <br><br>
 
 | Rule | Explanation |
 |------|-------------|
 | Separate business and technical errors | Business errors, such as unavailable drivers or invalid ride status transitions, are handled differently from technical failures, such as database or provider errors. |
 | Return user-friendly messages | Customers and drivers receive understandable error messages without exposing internal implementation details. |
-| Log operationally relevant events | Authentication failures, payment failures, ride status changes, matching problems, and backend exceptions are logged with enough context for troubleshooting. |
+| Log operationally relevant events | Authentication failures, payment failures, maps/routing failures, ride status changes, matching problems, and backend exceptions are logged with enough context for troubleshooting. |
 | Avoid sensitive data in logs | Logs must not contain unnecessary personal data, payment details, secrets, or authentication tokens. |
 | Support monitoring | Logs and health checks support the DevOps/network employee in detecting production issues. |
 <br>
 
 Affected building blocks: Backend Monolith, Nginx, MySQL Database,
 External Auth Provider, Internal Payment Message Queue, Payment Worker,
-Stripe Payment Provider.
+Stripe Payment Provider, External Maps/Geocoding/Routing Provider.
 <br><br>
 
 # Architecture Decisions
@@ -852,11 +871,12 @@ and are refined here with concrete scenarios.
 
 | Quality Category | Priority | Related Goals / Constraints | Refinement | Related Scenarios |
 |------------------|----------|-----------------------------|------------|-------------------|
-| Functional suitability | High | `QG_1` | Correct price calculation, automatic driver matching, consistent ride status, and correct ride/payment data. | `QS_FUNC_1`, `QS_FUNC_2` |
+| Functional suitability | High | `QG_1` | Correct price calculation using route distance/ETA data, automatic driver matching, consistent ride status, and correct ride/payment data. | `QS_FUNC_1`, `QS_FUNC_2` |
 | Usability | High | `QG_2` | Customers and drivers can use the core ride workflow without external instructions. | `QS_USAB_1` |
 | Scalability | High | `QG_3`, `C_3` | The system can handle a growing customer base and has a planned path from rented server to cloud services. | `QS_SCAL_1` |
 | Performance efficiency | Medium | `QG_1`, `QG_2` | Important user actions should respond in less than two seconds under normal MVP load. | `QS_PERF_1` |
 | Live tracking timeliness | Medium | `REQ_7` | Live GPS updates should be visible frequently enough to make active rides transparent. | `QS_PERF_2` |
+| Payment resilience | High | `AD_4`, `REQ_9`, Risk 3 | Payment processing must survive permanent payment failures and temporary Stripe outages without corrupting ride or payment state. | `QS_REL_1`, `QS_REL_2` |
 | Security and GDPR | High | `C_5` | Sensitive customer, driver, location, ride, and payment reference data must be protected. | `QS_SEC_1`, `QS_PRIV_1` |
 <br><br>
 
@@ -872,12 +892,14 @@ evaluation.
 
 | ID | Type | Quality Attribute | Source / Stimulus | Environment | Affected Artifact | Response | Response Measure |
 |----|------|-------------------|-------------------|-------------|-------------------|----------|------------------|
-| QS_FUNC_1 | Usage scenario | Functional suitability | A customer books a ride with pickup, destination, and desired time. | Normal MVP operation. | Ride Management & Matching, Persistence, Mobile App / Frontend. | The system calculates the price, matches a suitable verified driver, stores the ride, and returns the booking result. | Ride data, calculated price, selected driver, and initial status are stored consistently and shown to the customer. |
+| QS_FUNC_1 | Usage scenario | Functional suitability | A customer books a ride with pickup, destination, and desired time. | Normal MVP operation. | Ride Management & Matching, External Maps/Geocoding/Routing Provider, Persistence, Mobile App / Frontend. | The system retrieves route distance/ETA data, calculates the price, matches a suitable verified driver, stores the ride, and returns the booking result. | Ride data, calculated price, selected driver, and initial status are stored consistently and shown to the customer. |
 | QS_FUNC_2 | Usage scenario | Functional suitability | A ride status changes from requested to accepted, in progress, completed, or cancelled. | Normal MVP operation. | Ride Management & Matching, Live Tracking, Persistence, Mobile App / Frontend. | The status change is validated, persisted, and shown consistently to customer and driver. | Customer and driver see the same ride status after the update. |
 | QS_USAB_1 | Usage scenario | Usability | A new customer wants to book a ride without reading external documentation. | First-time usage on the mobile app. | Mobile App / Frontend, Backend Monolith. | The customer can register, search for a ride, see the calculated price, and request the ride through an intuitive workflow. | The customer can complete the booking workflow without external instructions. |
 | QS_SCAL_1 | Change scenario | Scalability | The customer base and ride volume grow beyond what the rented Linux server can comfortably handle. | Growth phase after MVP validation. | Deployment infrastructure, Backend Monolith, MySQL Database, Backup tooling. | Selected infrastructure parts can be moved to cloud services while the rented server remains available for backup. | Migration planning can reuse the existing deployment, data export, and backup concepts without redesigning the whole system. |
 | QS_PERF_1 | Usage scenario | Performance efficiency | A customer searches for or books a ride. | Normal MVP operation. | Mobile App / Frontend, Backend Monolith, MySQL Database. | The system processes the request and returns the result. | Search and booking responses should complete in less than 2 seconds under normal MVP load. |
 | QS_PERF_2 | Usage scenario | Live tracking timeliness | A driver sends live GPS updates during an active ride. | Active ride with WebSocket/TLS connection. | Live Tracking, Mobile App / Frontend, Backend Monolith. | The backend receives and distributes live location and ride status updates. | Location updates should be sent approximately every 2-3 seconds during an active ride. |
+| QS_REL_1 | Usage scenario | Payment resilience | Stripe rejects a queued payment request with a permanent payment error. | Completed ride with queued payment request. | Payment Integration, Payment Worker, Internal Payment Message Queue, Stripe Payment Provider, Persistence, Administration & Reporting. | Payment status is changed from `pending` to `failed`, the queue message is acknowledged without endless retries, and the failure is visible for operational review. | Ride status remains `completed`, payment status is `failed`, no sensitive payment data is logged, and the founding team can resolve the discrepancy. |
+| QS_REL_2 | Usage scenario | Payment resilience | Stripe is temporarily unavailable when the payment worker processes a queued payment request. | Provider outage or network timeout. | Payment Integration, Payment Worker, Internal Payment Message Queue, Stripe Payment Provider, Persistence. | Payment request remains retryable with backoff and the same idempotency key until Stripe recovers or operational review is needed. | The customer is not double-charged, ride status is not corrupted, and the final payment status/reference is stored after recovery. |
 | QS_SEC_1 | Usage scenario | Security | An unauthenticated or wrongly authorized user calls a protected backend endpoint. | Normal operation. | Backend Monolith, External Auth Provider, Nginx. | The request is rejected and no protected data is returned. | Protected REST and WebSocket/TLS endpoints require valid authentication and role-based authorization. |
 | QS_PRIV_1 | Usage scenario | GDPR / privacy | A user profile, ride, location, payment reference, log entry, or backup contains personal data. | Normal operation and backup operation. | Backend Monolith, MySQL Database, Backup tooling, Logs. | Personal data is stored only for defined purposes, access is role-restricted, and sensitive data is not unnecessarily written to logs. | Data handling follows the GDPR-oriented governance rules from chapter 8 and backups are encrypted. |
 <br><br>
@@ -925,19 +947,24 @@ development and operation.
 | Driver | Private or professional user who offers rides, accepts or declines ride requests, sends live location data, and completes rides. |
 | Driver Management & Verification | Backend module that manages driver profile data, availability, and verification status. |
 | Driver Verification | Process in which the company checks and approves a driver before the driver can offer rides on the platform. |
+| ETA | Estimated time of arrival used for ride search, booking, live tracking, and user-facing route information. |
 | External Auth Provider | External service used for registration, login, authentication, and token issuing. |
+| External Maps/Geocoding/Routing Provider | External service used for map display data, geocoding, reverse geocoding, route distance, and ETA information. |
 | Frontend | User-facing part of youRide that presents customer, driver, administration, and controlling workflows and communicates with the backend through APIs. |
 | Frontend REST API | HTTPS/REST interface used by the mobile app/frontend for normal application commands such as search, booking, cancellation, completion, history, administration, and reporting. |
 | GDPR | General Data Protection Regulation; legal basis for youRide's privacy and data governance decisions. |
 | GDPR-oriented Data Governance | youRide concept that applies GDPR principles to customer, driver, ride, location, payment reference, log, and backup data. |
+| Geocoding | Translation between human-readable addresses and geographic coordinates; reverse geocoding translates coordinates back into address-like information. |
 | HTTPS | Encrypted HTTP communication used for frontend-backend communication and external provider APIs. |
 | Identity / Auth Integration | Backend module that integrates with the external authentication provider and maps authenticated users to roles. |
+| Idempotency Key | Unique key attached to external payment requests so retries do not create duplicate Stripe charges. |
 | Internal Payment Message Queue | Durable internal queue that stores payment requests, retry metadata, and idempotency information before the payment worker communicates with Stripe. |
 | Integration Test | Test that checks whether several system parts or external integrations work together correctly. |
 | Java | Programming language chosen for the youRide backend monolith. |
 | Live GPS | Regular location information sent by the driver during an active ride. |
 | Live Tracking | youRide functionality that distributes active ride status and live GPS updates between driver and customer. |
 | Live Tracking Channel | WebSocket/TLS channel used for active ride location and status updates. |
+| Maps / Routing / Geocoding API | HTTPS-based external provider interface used to retrieve map display data, route distance, ETA, geocoding, and reverse geocoding data. |
 | Mobile App / Frontend | User-facing application for customers and drivers; internal browser access can be used for administration and controlling. |
 | Modular Monolith | Architectural style where the backend is deployed as one application but internally structured into explicit modules. |
 | Module | Internal backend building block with a clear responsibility and explicit interfaces. |
