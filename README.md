@@ -5,7 +5,7 @@ documentation. It explains why the architecture is shaped the way it is,
 which alternatives were considered, and what consequences the team accepts
 for the MVP.
 
-The main architecture documentation remains `arc42-template-EN.md`.
+The main architecture documentation remains `youRide-arc42.md`.
 This file focuses on architectural reasoning and traceability.
 
 ## Chapter 1 - Introduction and Goals
