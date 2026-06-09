@@ -416,21 +416,24 @@ external building blocks.
 
 # Runtime View
 
-
 The following runtime scenarios describe the most relevant MVP workflows
 on architecture level. They focus on interactions between the building
-blocks from the building block view.
+blocks from the building block view and cover the most important
+successful flows as well as payment failure and retry behavior at the
+critical Stripe interface.
 <br><br>
 
 ## Runtime Scenario 1: Customer Books a Ride with Automatic Driver Matching
 
+![Runtime Scenario 1](./resource/scenario1.png)
 
 1. The customer enters pickup, destination, and desired time in the
    youRide Mobile App / Frontend.
 2. The frontend sends the ride request to the backend monolith via the
    Frontend REST API.
 3. Identity / Auth Integration validates the customer's authentication
-   token with the external authentication provider.
+   token using the external authentication provider integration, for
+   example with provider metadata and cached public keys.
 4. Ride Management & Matching validates the request data and asks Driver
    Management & Verification for verified and available drivers.
 5. Ride Management & Matching calculates the ride price and selects a
@@ -442,7 +445,7 @@ blocks from the building block view.
    and current ride status.
 <br><br>
 
-Notable aspects:
+**Notable aspects:**
 
 -   The scenario supports `REQ_3`, `REQ_4`, and `REQ_5`.
 -   Authentication is external, but ride matching and price calculation
@@ -452,6 +455,8 @@ Notable aspects:
 <br><br>
 
 ## Runtime Scenario 2: Driver Accepts Ride and Live Tracking Starts
+
+![Runtime Scenario 2](./resource/scenario2.png)
 
 1. The driver receives the ride request in the youRide Mobile App /
    Frontend.
@@ -471,7 +476,7 @@ Notable aspects:
    status to `in progress` and Persistence stores the status change.
 <br><br>
 
-Notable aspects:
+**Notable aspects:**
 
 -   The scenario supports `REQ_6` and `REQ_7`.
 -   REST is used for the accept command, while WebSocket/TLS is used for
@@ -481,6 +486,8 @@ Notable aspects:
 <br><br>
 
 ## Runtime Scenario 3: Ride is Completed and Payment is Processed
+
+![Runtime Scenario 3](./resource/scenario3.png)
 
 1. The driver or customer confirms that the ride has reached the
    destination.
@@ -509,7 +516,7 @@ Notable aspects:
     to customer and driver.
 <br><br>
 
-Notable aspects:
+**Notable aspects:**
 
 -   The scenario supports `REQ_9`, `REQ_10`, and `BG_2`.
 -   Stripe is the only external payment system in the MVP.
@@ -518,6 +525,84 @@ Notable aspects:
     the payment worker receives a final Stripe result.
 -   Payment result, ride status, and reporting data are persisted to
     support ride history and commission reporting.
+<br><br>
+
+## Runtime Scenario 4: Customer Payment Fails
+
+![Runtime Scenario 4](./resource/scenario4.png)
+
+1. The payment worker reads a queued payment request from the internal
+   durable payment queue and calls Stripe through HTTPS / Stripe API with
+   the idempotency key.
+2. Stripe rejects the transaction with a permanent payment error such as
+   `card_declined`, `insufficient_funds`, or `expired_card`.
+3. The payment worker classifies the result as non-retryable and stops
+   retrying the queue message.
+4. Payment Integration updates the payment status from `pending` to
+   `failed` through Persistence and logs the failure context without
+   exposing payment details or unnecessary personal data.
+5. Administration & Reporting receives the failed payment information so
+   the founding team can review the operational discrepancy.
+6. The payment request is acknowledged and removed from the internal
+   durable payment queue to prevent an infinite retry loop.
+7. The frontend fetches the updated payment status through the Frontend
+   REST API or receives it through an application update.
+8. The customer sees that the ride was completed but payment failed, and
+   the founding team can perform operational correction or restrict
+   further bookings until the debt is cleared.
+<br><br>
+
+**Notable aspects:**
+
+-   The scenario supports `REQ_9`, `REQ_10`, `REQ_11`, `BG_2`, and
+    `QS_PRIV_1`.
+-   The ride status remains `completed` even though the payment status is
+    `failed`; this keeps the ride history and reporting data truthful.
+-   Permanent payment failures are not retried endlessly, which protects
+    the external provider integration and keeps operations observable.
+-   Logs and reports must avoid sensitive payment data while still
+    giving the team enough context to resolve the failed payment.
+<br><br>
+
+## Runtime Scenario 5: Stripe Payment Outage with Automatic Queue Retry
+
+![Runtime Scenario 5](./resource/scenario5.png)
+
+1. The payment worker reads a pending payment request from the internal
+   durable payment queue.
+2. The payment worker sends an HTTPS request to the Stripe API using the
+   unique idempotency key.
+3. Stripe does not respond because of a network timeout or provider
+   outage.
+4. The payment worker classifies the error as a temporary technical
+   failure.
+5. The payment request remains in the queue instead of being acknowledged
+   as completed.
+6. The queue retry policy delays the next attempt according to a defined
+   backoff period.
+7. After the backoff time expires, the payment worker reads the same
+   payment request again.
+8. The payment worker sends another HTTPS request to Stripe with the
+   same idempotency key.
+9. Stripe has recovered, processes the request without double-charging,
+   and returns a successful transaction status and reference.
+10. Payment Integration stores the final payment status and transaction
+    reference through Persistence.
+<br><br>
+
+**Notable aspects:**
+
+
+-   The scenario supports `REQ_9`, `REQ_10`, `BG_2`, and the mitigation
+    of external provider dependency risks.
+-   The ride remains `completed` while payment processing continues in
+    the background, so the user workflow is not interrupted by temporary
+    provider outages.
+-   The idempotency key prevents duplicate charges when the same payment
+    request is retried.
+-   If Stripe remains unavailable beyond the standard retry window, the
+    request can be escalated to operational review without corrupting
+    ride or payment state.
 <br><br>
 
 # Deployment View
