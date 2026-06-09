@@ -903,7 +903,7 @@ evaluation.
 
 The following risks and technical debts must be monitored during
 development and operation.
-<br>
+<br><br>
 
 | Priority | Risk / Technical Debt | Related Decisions / Constraints | Description | Suggested Measure |
 |----------|-----------------------|---------------------------------|-------------|-------------------|
