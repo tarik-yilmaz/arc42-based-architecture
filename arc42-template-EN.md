@@ -256,7 +256,7 @@ monolith, database, and the two external providers for authentication
 and payment.
 <br><br>
 
-Level 1 diagram: [level1](./resource/level1.png)
+![level1](./resource/level1.png)
 <br><br>
 
 ### Motivation
@@ -314,7 +314,7 @@ on this level because their internal structure is either less critical
 for the MVP architecture or outside the youRide implementation scope.
 <br><br>
 
-Level 2 diagram: [level2](./resource/level2.png)
+![level2](./resource/level2.png)
 <br><br>
 
 | Name | Responsibility | Main Collaborators |
@@ -350,11 +350,7 @@ status handling, cancellation, completion, ride history, and the payment
 handoff.
 <br><br>
 
-A class-diagram style model for this Level 3 view is maintained in
-`Building-Block-View/level3.md`.
-<br><br>
-
-Level 3 diagram: [level3](./resource/level3.png)
+![level3](./resource/level3.png)
 <br><br>
 
 ### Motivation
