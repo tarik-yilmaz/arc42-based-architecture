@@ -117,3 +117,7 @@
 **5:** Skalierung mit monolithische Architektur aufwendiger/schwer realisierbar
 
 **6:** Backup/Restore Risiko, wenn Backups nicht vollstaendig, verschluesselt, extern gespeichert und regelmaessig getestet werden
+
+maps api wohin damit
+lv3 feedback von marcel und paul
+stripe payment fails fehlerbehandlung?
