@@ -152,7 +152,7 @@ only supplies technical map, routing, geocoding, distance, and ETA data.
 ## Business Context
 <br>
 
-![business-context-diagramm](./resource/business-context.png)
+![business-context-diagramm](./resource/images/business-context.png)
 <br><br>
 
 The following table shows youRide as a black box and lists the external
@@ -178,7 +178,7 @@ insurance providers, or transportation agencies in the MVP scope.
 ## Technical Context
 <br>
 
-![technical-context-diagramm](./resource/technical-context.png)
+![technical-context-diagramm](./resource/images/technical-context.png)
 <br><br>
 
 The MVP uses simple and well-known technical interfaces to keep
@@ -256,7 +256,7 @@ monolith, database, internal payment queue, and external providers for
 authentication, payment, and maps/geocoding/routing.
 <br><br>
 
-![level1](./resource/level1.png)
+![level1](./resource/images/level1.png)
 <br><br>
 
 ### Motivation
@@ -317,7 +317,7 @@ on this level because their internal structure is either less critical
 for the MVP architecture or outside the youRide implementation scope.
 <br><br>
 
-![level2](./resource/level2.png)
+![level2](./resource/images/level2.png)
 <br><br>
 
 | Name | Responsibility | Main Collaborators |
@@ -354,7 +354,7 @@ status handling, cancellation, completion, ride history, maps/routing
 support for price calculation, and the payment handoff.
 <br><br>
 
-![level3](./resource/level3.png)
+![level3](./resource/images/level3.png)
 <br><br>
 
 ### Motivation
@@ -433,7 +433,7 @@ critical Stripe interface.
 
 ## Runtime Scenario 1: Customer Books a Ride with Automatic Driver Matching
 
-![Runtime Scenario 1](./resource/scenario1.png)
+![Runtime Scenario 1](./resource/images/scenario1.png)
 
 1. The customer enters pickup, destination, and desired time in the
    youRide Mobile App / Frontend.
@@ -469,7 +469,7 @@ critical Stripe interface.
 
 ## Runtime Scenario 2: Driver Accepts Ride and Live Tracking Starts
 
-![Runtime Scenario 2](./resource/scenario2.png)
+![Runtime Scenario 2](./resource/images/scenario2.png)
 
 1. The driver receives the ride request in the youRide Mobile App /
    Frontend.
@@ -500,7 +500,7 @@ critical Stripe interface.
 
 ## Runtime Scenario 3: Ride is Completed and Payment is Processed
 
-![Runtime Scenario 3](./resource/scenario3.png)
+![Runtime Scenario 3](./resource/images/scenario3.png)
 
 1. The driver or customer confirms that the ride has reached the
    destination.
@@ -542,7 +542,7 @@ critical Stripe interface.
 
 ## Runtime Scenario 4: Customer Payment Fails
 
-![Runtime Scenario 4](./resource/scenario4.png)
+![Runtime Scenario 4](./resource/images/scenario4.png)
 
 1. The payment worker reads a queued payment request from the internal
    durable payment queue and calls Stripe through HTTPS / Stripe API with
@@ -579,7 +579,7 @@ critical Stripe interface.
 
 ## Runtime Scenario 5: Stripe Payment Outage with Automatic Queue Retry
 
-![Runtime Scenario 5](./resource/scenario5.png)
+![Runtime Scenario 5](./resource/images/scenario5.png)
 
 1. The payment worker reads a pending payment request from the internal
    durable payment queue.
@@ -671,7 +671,7 @@ experience mobile-first while still allowing efficient internal work.
 ### Mapping of Building Blocks to Infrastructure
 <br>
 
-![Deployment View](./resource/deployment-view.png)
+![Deployment View](./resource/images/deployment-view.png)
 <br><br>
 
 | Building Block / Artifact | Deployment Target | Notes |
@@ -880,7 +880,7 @@ and are refined here with concrete scenarios.
 | Security and GDPR | High | `C_5` | Sensitive customer, driver, location, ride, and payment reference data must be protected. | `QS_SEC_1`, `QS_PRIV_1` |
 <br><br>
 
-![Quality Tree](./resource/quality_tree.png)
+![Quality Tree](./resource/images/quality_tree.png)
 <br><br>
 
 ## Quality Scenarios
