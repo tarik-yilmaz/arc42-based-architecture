@@ -394,6 +394,8 @@ the communication partner, the inputs, and the outputs.
 
 **Project-specific content**
 
+![business-context-diagramm](./resource/business-context.png)
+
 The following table shows youRide as a black box and lists the external
 communication partners and the domain-specific information exchanged
 with them.
@@ -444,6 +446,8 @@ together with a mapping table showing the relationships between channels
 and input/output.
 
 **Project-specific content**
+
+![technical-context-diagramm](./resource/technical-context.png)
 
 The MVP uses simple and well-known technical interfaces to keep
 implementation and operation manageable for the small team. Normal app
