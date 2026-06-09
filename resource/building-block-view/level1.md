@@ -1,5 +1,3 @@
-%% Kritik: Zu viele Pfeile - ggf auf drawio umsteigen für Level 1
-
 graph TD
     %% Akteure
     Customer([Customer])
