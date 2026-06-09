@@ -1,0 +1,178 @@
+<mxfile host="app.diagrams.net" agent="Perplexity">
+  <diagram id="ride-booking-runtime-view" name="Page-1">
+    <mxGraphModel dx="1417" dy="799" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900" background="light-dark(#ffffff, #ffffff)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=#182E3E;strokeColor=#FFFFFF;fontStyle=1;align=left;verticalAlign=middle;top=0;left=0;bottom=0;right=0;spacingLeft=8;labelBackgroundColor=none;fontColor=#FFFFFF;" value="Customer Books a Ride with Automatic Driver Matching" vertex="1">
+          <mxGeometry height="28" width="380" x="2" y="4" as="geometry" />
+        </mxCell>
+        <mxCell id="customer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=2;labelBackgroundColor=none;fillColor=#182E3E;strokeColor=#FFFFFF;fontColor=#FFFFFF;" value="ext:CustomerFrontend" vertex="1">
+          <mxGeometry height="60" width="140" x="50" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=2;labelBackgroundColor=none;fillColor=#182E3E;strokeColor=#FFFFFF;fontColor=#FFFFFF;" value=":FrontendRESTAPI" vertex="1">
+          <mxGeometry height="60" width="140" x="250" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="auth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=2;labelBackgroundColor=none;fillColor=#182E3E;strokeColor=#FFFFFF;fontColor=#FFFFFF;" value="ext:IdentityAuthProvider" vertex="1">
+          <mxGeometry height="60" width="150" x="450" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="matching" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=2;labelBackgroundColor=none;fillColor=#182E3E;strokeColor=#FFFFFF;fontColor=#FFFFFF;" value=":RideManagementMatching" vertex="1">
+          <mxGeometry height="60" width="180" x="660" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="driver_mgmt" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=2;labelBackgroundColor=none;fillColor=#182E3E;strokeColor=#FFFFFF;fontColor=#FFFFFF;" value=":DriverManagement" vertex="1">
+          <mxGeometry height="60" width="140" x="890" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="persistence" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=2;labelBackgroundColor=none;fillColor=#182E3E;strokeColor=#FFFFFF;fontColor=#FFFFFF;" value=":Persistence" vertex="1">
+          <mxGeometry height="60" width="130" x="1080" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 8;endArrow=none;strokeWidth=2;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="110" as="sourcePoint" />
+            <mxPoint x="120" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l2" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 8;endArrow=none;strokeWidth=2;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="110" as="sourcePoint" />
+            <mxPoint x="320" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l3" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 8;endArrow=none;strokeWidth=2;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="525" y="110" as="sourcePoint" />
+            <mxPoint x="525" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l4" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 8;endArrow=none;strokeWidth=2;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="110" as="sourcePoint" />
+            <mxPoint x="750" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l5" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 8;endArrow=none;strokeWidth=2;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="960" y="110" as="sourcePoint" />
+            <mxPoint x="960" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l6" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 8;endArrow=none;strokeWidth=2;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1145" y="110" as="sourcePoint" />
+            <mxPoint x="1145" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a_cust" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#182E3E;strokeColor=#FFFFFF;labelBackgroundColor=none;fontColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="580" width="12" x="114" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="a_api" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#182E3E;strokeColor=#FFFFFF;labelBackgroundColor=none;fontColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="520" width="12" x="314" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="a_auth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#182E3E;strokeColor=#FFFFFF;labelBackgroundColor=none;fontColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="50" width="12" x="519" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="a_match" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#182E3E;strokeColor=#FFFFFF;labelBackgroundColor=none;fontColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="320" width="12" x="744" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="a_drv" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#182E3E;strokeColor=#FFFFFF;labelBackgroundColor=none;fontColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="50" width="12" x="954" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="a_pers" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#182E3E;strokeColor=#FFFFFF;labelBackgroundColor=none;fontColor=#FFFFFF;" value="" vertex="1">
+          <mxGeometry height="50" width="12" x="1139" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="em1" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="126" y="170" as="sourcePoint" />
+            <mxPoint x="314" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="1-2. POST /api/rides (pickup, dest, time)" vertex="1">
+          <mxGeometry height="20" width="180" x="130" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="em2" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="326" y="210" as="sourcePoint" />
+            <mxPoint x="519" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="3. validateToken(token)" vertex="1">
+          <mxGeometry height="20" width="160" x="345" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="em3" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;dashed=1;dashPattern=8 8;endArrow=open;endFill=0;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="519" y="250" as="sourcePoint" />
+            <mxPoint x="326" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="token validated (userId)" vertex="1">
+          <mxGeometry height="20" width="140" x="355" y="228" as="geometry" />
+        </mxCell>
+        <mxCell id="em4" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="326" y="300" as="sourcePoint" />
+            <mxPoint x="744" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t4" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="4. processRideRequest(requestData)" vertex="1">
+          <mxGeometry height="20" width="220" x="420" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="em5" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="756" y="340" as="sourcePoint" />
+            <mxPoint x="954" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="getAvailableAndVerifiedDrivers()" vertex="1">
+          <mxGeometry height="20" width="180" x="765" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="em6" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;dashed=1;dashPattern=8 8;endArrow=open;endFill=0;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="954" y="380" as="sourcePoint" />
+            <mxPoint x="756" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t6" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="return driverList" vertex="1">
+          <mxGeometry height="20" width="120" x="800" y="358" as="geometry" />
+        </mxCell>
+        <mxCell id="note_calc" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#182E3E;strokeColor=#FFFFFF;fontSize=11;labelBackgroundColor=none;fontColor=#FFFFFF;" value="5. Calculate pricing model&#xa;&amp; select closest matching driver" vertex="1">
+          <mxGeometry height="45" width="170" x="770" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="em7" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;endArrow=classic;endFill=1;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="756" y="480" as="sourcePoint" />
+            <mxPoint x="1139" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="6. saveRide(rideRecord, status=`requested`)" vertex="1">
+          <mxGeometry height="20" width="240" x="810" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="em8" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;dashed=1;dashPattern=8 8;endArrow=open;endFill=0;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1139" y="520" as="sourcePoint" />
+            <mxPoint x="756" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t8" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="confirm storage" vertex="1">
+          <mxGeometry height="20" width="100" x="870" y="498" as="geometry" />
+        </mxCell>
+        <mxCell id="em9" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;dashed=1;dashPattern=8 8;endArrow=open;endFill=0;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="744" y="560" as="sourcePoint" />
+            <mxPoint x="326" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t9" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="return success &amp; driverMetadata" vertex="1">
+          <mxGeometry height="20" width="180" x="440" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="em10" edge="1" parent="1" style="edgeStyle=straightEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;dashed=1;dashPattern=8 8;endArrow=open;endFill=0;labelBackgroundColor=none;strokeColor=#23445D;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="314" y="610" as="sourcePoint" />
+            <mxPoint x="126" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t10" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;labelBackgroundColor=none;fontColor=#FFFFFF;" value="7-8. 201 Created (price, driver details, status)" vertex="1">
+          <mxGeometry height="20" width="240" x="130" y="585" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
