@@ -1,41 +1,6 @@
 # youRide Architecture Documentation
 
-**About arc42**
-
-arc42, the template for documentation of software and system
-architecture.
-
-Template Version 8.2 EN. (based upon AsciiDoc version), January 2023
-
-Created, maintained and © by Dr. Peter Hruschka, Dr. Gernot Starke and
-contributors. See <https://arc42.org>.
-
-<div class="note">
-
-This version of the template contains some help and explanations. It is
-used for familiarization with arc42 and the understanding of the
-concepts. For documentation of your own system you use better the
-*plain* version.
-
-</div>
-
-<div style="page-break-after: always;"></div>
-
 # Introduction and Goals
-
-Describes the relevant requirements and the driving forces that software
-architects and development team must consider. These include
-
--   underlying business goals,
-
--   essential features,
-
--   essential functional requirements,
-
--   quality goals for the architecture and
-
--   relevant stakeholders and their expectations
-
 This document describes the architecture of youRide, an Austrian ride
 sharing application created by a small startup team. The system provides
 an affordable and convenient transportation option while focusing on a
@@ -43,44 +8,6 @@ lean MVP, fast market entry, paying customers, and cost-efficient
 operation.
 
 ## Requirements Overview
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Short description of the functional requirements, driving forces,
-extract (or abstract) of requirements. Link to (hopefully existing)
-requirements documents (with version number and information where to
-find it).
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-From the point of view of the end users a system is created or modified
-to improve support of a business activity and/or improve the quality.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Short textual description, probably in tabular use-case format. If
-requirements documents exist this overview should refer to these
-documents.
-
-Keep these excerpts as short as possible. Balance readability of this
-document with potential redundancy w.r.t to requirements documents.
-
-See [Introduction and Goals](https://docs.arc42.org/section-1/) in the
-arc42 documentation.
-
-**Project-specific content**
 
 ### Business Goals
 
@@ -139,44 +66,6 @@ in the referenced documents.
 
 ## Quality Goals
 
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-The top three (max five) quality goals for the architecture whose
-fulfillment is of highest importance to the major stakeholders. We
-really mean quality goals for the architecture. Don’t confuse them with
-project goals. They are not necessarily identical.
-
-Consider this overview of potential topics (based upon the ISO 25010
-standard):
-
-![Categories of Quality
-Requirements](images/01_2_iso-25010-topics-EN.drawio.png)
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-You should know the quality goals of your most important stakeholders,
-since they will influence fundamental architectural decisions. Make sure
-to be very concrete about these qualities, avoid buzzwords. If you as an
-architect do not know how the quality of your work will be judged…
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-A table with quality goals and concrete scenarios, ordered by priorities
-
-**Project-specific content**
-
 The following quality goals are ordered by priority and drive the main
 architectural decisions.
 
@@ -187,52 +76,6 @@ architectural decisions.
 | QG_3 | 3 | Scalability | The system must support growth in active customers, active drivers, completed rides, and later cloud usage, without creating high initial infrastructure costs. | When demand grows beyond the rented Linux server, the architecture allows migration of selected infrastructure parts to cloud services while keeping the server available for backup. |
 
 ## Stakeholders
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Explicit overview of stakeholders of the system, i.e. all person, roles
-or organizations that
-
--   should know the architecture
-
--   have to be convinced of the architecture
-
--   have to work with the architecture or with code
-
--   need the documentation of the architecture for their work
-
--   have to come up with decisions about the system or its development
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-You should know all parties involved in development of the system or
-affected by the system. Otherwise, you may get nasty surprises later in
-the development process. These stakeholders determine the extent and the
-level of detail of your work and its results.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Table with role names, person names, and their expectations with respect
-to the architecture and its documentation.
-
-| Role/Name   | Contact        | Expectations       |
-|-------------|----------------|--------------------|
-| *\<Role-1>* | *\<Contact-1>* | *\<Expectation-1>* |
-| *\<Role-2>* | *\<Contact-2>* | *\<Expectation-2>* |
-
-**Project-specific content**
 
 The following stakeholders influence the architecture and the required
 level of detail in this documentation.
@@ -245,46 +88,7 @@ level of detail in this documentation.
 | DevOps / network employee | Internal employee | Reliable deployment, stable server and network operation, monitoring, backups, and a technical setup that can later integrate cloud services. |
 | Controlling employee | Internal employee | Cost overview, revenue data, ride-based commission reporting, and basic operational reporting for business decisions. |
 
-<div style="page-break-after: always;"></div>
-
 # Architecture Constraints
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Any requirement that constraints software architects in their freedom of
-design and implementation decisions or decision about the development
-process. These constraints sometimes go beyond individual systems and
-are valid for whole organizations and companies.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Architects should know exactly where they are free in their design
-decisions and where they must adhere to constraints. Constraints must
-always be dealt with; they may be negotiable, though.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Simple tables of constraints with explanations. If needed you can
-subdivide them into technical constraints, organizational and political
-constraints and conventions (e.g. programming or versioning guidelines,
-documentation or naming conventions)
-
-See [Architecture Constraints](https://docs.arc42.org/section-2/) in the
-arc42 documentation.
-
-**Project-specific content**
 
 The following constraints limit the architectural freedom for the first
 release of youRide. They are separated from architecture decisions, so
@@ -305,94 +109,18 @@ are current architecture decisions and not externally mandated
 constraints. They will be justified in the solution strategy and
 architecture decisions sections.
 
-<div style="page-break-after: always;"></div>
-
 # System Scope and Context
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-System scope and context - as the name suggests - delimits your system
-(i.e. your scope) from all its communication partners (neighboring
-systems and users, i.e. the context of your system). It thereby
-specifies the external interfaces.
-
-If necessary, differentiate the business context (domain specific inputs
-and outputs) from the technical context (channels, protocols, hardware).
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-The domain interfaces and technical interfaces to communication partners
-are among your system’s most critical aspects. Make sure that you
-completely understand them.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Various options:
-
--   Context diagrams
-
--   Lists of communication partners and their interfaces.
-
-See [Context and Scope](https://docs.arc42.org/section-3/) in the arc42
-documentation.
-
-**Project-specific content**
 
 For this documentation, the youRide system boundary includes the mobile
 app/frontend, the backend monolith, the MySQL database, and the admin
-functions used by the founding team. External systems are limited to an
-external authentication provider and the payment provider Stripe in the
-MVP. Map display, ride matching, live tracking, reporting, and
-administration are treated as youRide functionality.
+functions used by the founding team. External systems used in the MVP
+are an external authentication provider, the payment provider Stripe,
+and an external maps/geocoding/routing provider. Map display, ride
+matching, price calculation, live tracking, reporting, and
+administration are treated as youRide functionality; the maps provider
+only supplies technical map, routing, geocoding, distance, and ETA data.
 
 ## Business Context
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Specification of **all** communication partners (users, IT-systems, …)
-with explanations of domain specific inputs and outputs or interfaces.
-Optionally you can add domain specific formats or communication
-protocols.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-All stakeholders should understand which data are exchanged with the
-environment of the system.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-All kinds of diagrams that show the system as a black box and specify
-the domain interfaces to communication partners.
-
-Alternatively (or additionally) you can use a table. The title of the
-table is the name of your system, the three columns contain the name of
-the communication partner, the inputs, and the outputs.
-
-**Project-specific content**
 
 ![business-context-diagramm](./resource/business-context.png)
 
@@ -408,44 +136,12 @@ with them.
 | Controlling employee | Reporting requests and cost or revenue analysis requests. | Ride-based commission data, revenue data, cost overview, and basic operational reports. |
 | External authentication provider | Registration and login requests, identity verification requests. | Authentication result, user identity information, and authentication tokens. |
 | Stripe payment provider | Payment request, ride price, payer and payee references, payment confirmation request. | Payment status, transaction reference, and payment confirmation or failure information. |
+| External maps/geocoding/routing provider | Route, distance, ETA, geocoding, reverse geocoding, and map display data. | Pickup and destination addresses or coordinates and the minimum location data needed for map, route, ETA, and geocoding requests. |
 
 There are no additional external business partners such as authorities,
 insurance providers, or transportation agencies in the MVP scope.
 
 ## Technical Context
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Technical interfaces (channels and transmission media) linking your
-system to its environment. In addition a mapping of domain specific
-input/output to the channels, i.e. an explanation which I/O uses which
-channel.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Many stakeholders make architectural decision based on the technical
-interfaces between the system and its context. Especially infrastructure
-or hardware designers decide these technical interfaces.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-E.g. UML deployment diagram describing channels to neighboring systems,
-together with a mapping table showing the relationships between channels
-and input/output.
-
-**Project-specific content**
 
 ![technical-context-diagramm](./resource/technical-context.png)
 
@@ -456,6 +152,9 @@ communication because both driver and customer need timely location and
 status updates during an active ride. Payment processing is decoupled
 through an internal durable message queue so that temporary network
 errors, Stripe outages, or backend retries do not lose payment requests.
+Map, route, ETA, and geocoding information is retrieved through an
+external provider API, while ride matching and price calculation rules
+remain inside youRide.
 
 | Technical Interface | Communication Partner / Target | Channel / Protocol | Purpose |
 |---------------------|--------------------------------|--------------------|---------|
@@ -463,6 +162,7 @@ errors, Stripe outages, or backend retries do not lose payment requests.
 | Live tracking channel | youRide backend monolith | WebSocket over TLS | Driver and customer live location updates and ride status changes during an active ride. |
 | Backend to database | MySQL database | Internal database connection on the rented Linux server or private network | Store and read customer profiles, driver profiles, rides, ride status, prices, payment references, and reporting data. |
 | Backend to authentication provider | External authentication provider | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect | Register users, authenticate users, and validate identity information. |
+| Backend/mobile app to maps provider | External maps/geocoding/routing provider | HTTPS / Maps, Routing, and Geocoding APIs | Resolve pickup and destination locations, retrieve route distance and ETA, support reverse geocoding, and display map information. |
 | Backend to payment queue | Internal payment message queue | Durable internal queue, for example AMQP / RabbitMQ or a comparable managed queue | Store payment requests reliably before provider communication, so payments can be retried after temporary network, provider, or backend errors. |
 | Payment worker to Stripe | Stripe payment provider | HTTPS / Stripe API with retries and idempotency keys | Process queued payment requests, retrieve payment status, and store payment references for ride commissions. |
 | DevOps access | Rented Linux server | Secure administrative access, e.g. SSH via restricted network access | Deployment, monitoring, backup handling, and operational maintenance. |
@@ -477,60 +177,13 @@ deployment view.
 |---------------------|-------------------|
 | Registration, ride search, booking, cancellation, completion, ride history | Mobile app to backend via HTTPS/REST. |
 | Live GPS location and active ride status | WebSocket over TLS between mobile app and backend. |
+| Pickup/destination geocoding, route distance, ETA, and map display data | Backend or mobile app to external maps/geocoding/routing provider via HTTPS / Maps API, with only required location data sent. |
 | Authentication result and user identity | Backend to external authentication provider via HTTPS. |
 | Payment request and retry state | Backend to internal payment message queue through a durable queue channel. |
 | Payment confirmation and transaction reference | Payment worker to Stripe via HTTPS / Stripe API, with the result persisted in youRide. |
 | Stored customer, driver, ride, price, payment, and reporting data | Backend to MySQL via internal database connection. |
 
-<div style="page-break-after: always;"></div>
-
 # Solution Strategy
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-A short summary and explanation of the fundamental decisions and
-solution strategies, that shape system architecture. It includes
-
--   technology decisions
-
--   decisions about the top-level decomposition of the system, e.g.
-    usage of an architectural pattern or design pattern
-
--   decisions on how to achieve key quality goals
-
--   relevant organizational decisions, e.g. selecting a development
-    process or delegating certain tasks to third parties.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-These decisions form the cornerstones for your architecture. They are
-the foundation for many other detailed decisions or implementation
-rules.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Keep the explanations of such key decisions short.
-
-Motivate what was decided and why it was decided that way, based upon
-problem statement, quality goals and key constraints. Refer to details
-in the following sections.
-
-See [Solution Strategy](https://docs.arc42.org/section-4/) in the arc42
-documentation.
-
-**Project-specific content**
 
 The following solution strategies form the cornerstones of the
 architecture and provide the basis for more detailed implementation
@@ -545,91 +198,9 @@ decisions.
 | Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, ride status changes, matching, persistence, authentication handoff, and payment integration must work reliably. |
 | Security and data protection (`C_5`) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
 
-<div style="page-break-after: always;"></div>
-
 # Building Block View
 
-<div class="formalpara-title">
-
-**Content**
-
-</div>
-
-The building block view shows the static decomposition of the system
-into building blocks (modules, components, subsystems, classes,
-interfaces, packages, libraries, frameworks, layers, partitions, tiers,
-functions, macros, operations, data structures, …) as well as their
-dependencies (relationships, associations, …)
-
-This view is mandatory for every architecture documentation. In analogy
-to a house this is the *floor plan*.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Maintain an overview of your source code by making its structure
-understandable through abstraction.
-
-This allows you to communicate with your stakeholder on an abstract
-level without disclosing implementation details.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-The building block view is a hierarchical collection of black boxes and
-white boxes (see figure below) and their descriptions.
-
-![Hierarchy of building blocks](images/05_building_blocks-EN.png)
-
-**Level 1** is the white box description of the overall system together
-with black box descriptions of all contained building blocks.
-
-**Level 2** zooms into some building blocks of level 1. Thus it contains
-the white box description of selected building blocks of level 1,
-together with black box descriptions of their internal building blocks.
-
-**Level 3** zooms into selected building blocks of level 2, and so on.
-
-See [Building Block View](https://docs.arc42.org/section-5/) in the
-arc42 documentation.
-
 ## Whitebox Overall System
-
-Here you describe the decomposition of the overall system using the
-following white box template. It contains
-
--   an overview diagram
-
--   a motivation for the decomposition
-
--   black box descriptions of the contained building blocks. For these
-    we offer you alternatives:
-
-    -   use *one* table for a short and pragmatic overview of all
-        contained building blocks and their interfaces
-
-    -   use a list of black box descriptions of the building blocks
-        according to the black box template (see below). Depending on
-        your choice of tool this list could be sub-chapters (in text
-        files), sub-pages (in a Wiki) or nested elements (in a modeling
-        tool).
-
--   (optional:) important interfaces, that are not explained in the
-    black box templates of a building block, but are very important for
-    understanding the white box. Since there are so many ways to specify
-    interfaces why do not provide a specific template for them. In the
-    worst case you have to specify and describe syntax, semantics,
-    protocols, error handling, restrictions, versions, qualities,
-    necessary compatibilities and many things more. In the best case you
-    will get away with examples or simple signatures.
-
-**Project-specific content**
 
 ### Overview Diagram
 
@@ -674,15 +245,6 @@ because they are security-critical and costly to implement from scratch.
 
 ## Level 2
 
-Here you can specify the inner structure of (some) building blocks from
-level 1 as white boxes.
-
-You have to decide which building blocks of your system are important
-enough to justify such a detailed description. Please prefer relevance
-over completeness. Specify important, surprising, risky, complex or
-volatile building blocks. Leave out normal, simple, boring or
-standardized parts of your system
-
 ### White Box youRide Backend Monolith
 
 The backend monolith is refined on Level 2 because it contains the most
@@ -712,12 +274,6 @@ for the MVP architecture or outside the youRide implementation scope.
 | Repository interfaces | Internal persistence interfaces used by backend modules to access stored data through the Persistence module. |
 
 ## Level 3
-
-Here you can specify the inner structure of (some) building blocks from
-level 2 as white boxes.
-
-When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.
 
 ### White Box Ride Management & Matching
 
@@ -783,70 +339,7 @@ external building blocks.
 -   The module must be kept cohesive because it is a major risk area for
     monolith complexity and scaling limitations.
 
-<div style="page-break-after: always;"></div>
-
 # Runtime View
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-The runtime view describes concrete behavior and interactions of the
-system’s building blocks in form of scenarios from the following areas:
-
--   important use cases or features: how do building blocks execute
-    them?
-
--   interactions at critical external interfaces: how do building blocks
-    cooperate with users and neighboring systems?
-
--   operation and administration: launch, start-up, stop
-
--   error and exception scenarios
-
-Remark: The main criterion for the choice of possible scenarios
-(sequences, workflows) is their **architectural relevance**. It is
-**not** important to describe a large number of scenarios. You should
-rather document a representative selection.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-You should understand how (instances of) building blocks of your system
-perform their job and communicate at runtime. You will mainly capture
-scenarios in your documentation to communicate your architecture to
-stakeholders that are less willing or able to read and understand the
-static models (building block view, deployment view).
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-There are many notations for describing scenarios, e.g.
-
--   numbered list of steps (in natural language)
-
--   activity diagrams or flow charts
-
--   sequence diagrams
-
--   BPMN or EPCs (event process chains)
-
--   state machines
-
--   …
-
-See [Runtime View](https://docs.arc42.org/section-6/) in the arc42
-documentation.
-
-**Project-specific content**
 
 The following runtime scenarios describe the most relevant MVP workflows
 on architecture level. They focus on interactions between the building
@@ -943,85 +436,9 @@ Notable aspects:
 -   Payment result, ride status, and reporting data are persisted to
     support ride history and commission reporting.
 
-<div style="page-break-after: always;"></div>
-
 # Deployment View
 
-<div class="formalpara-title">
-
-**Content**
-
-</div>
-
-The deployment view describes:
-
-1.  technical infrastructure used to execute your system, with
-    infrastructure elements like geographical locations, environments,
-    computers, processors, channels and net topologies as well as other
-    infrastructure elements and
-
-2.  mapping of (software) building blocks to that infrastructure
-    elements.
-
-Often systems are executed in different environments, e.g. development
-environment, test environment, production environment. In such cases you
-should document all relevant environments.
-
-Especially document a deployment view if your software is executed as
-distributed system with more than one computer, processor, server or
-container or when you design and construct your own hardware processors
-and chips.
-
-From a software perspective it is sufficient to capture only those
-elements of an infrastructure that are needed to show a deployment of
-your building blocks. Hardware architects can go beyond that and
-describe an infrastructure to any level of detail they need to capture.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Software does not run without hardware. This underlying infrastructure
-can and will influence a system and/or some cross-cutting concepts.
-Therefore, there is a need to know the infrastructure.
-
-Maybe a highest level deployment diagram is already contained in section
-3.2. as technical context with your own infrastructure as ONE black box.
-In this section one can zoom into this black box using additional
-deployment diagrams:
-
--   UML offers deployment diagrams to express that view. Use it,
-    probably with nested diagrams, when your infrastructure is more
-    complex.
-
--   When your (hardware) stakeholders prefer other kinds of diagrams
-    rather than a deployment diagram, let them use any kind that is able
-    to show nodes and channels of the infrastructure.
-
-See [Deployment View](https://docs.arc42.org/section-7/) in the arc42
-documentation.
-
 ## Infrastructure Level 1
-
-Describe (usually in a combination of diagrams, tables, and text):
-
--   distribution of a system to multiple locations, environments,
-    computers, processors, .., as well as physical connections between
-    them
-
--   important justifications or motivations for this deployment
-    structure
-
--   quality and/or performance features of this infrastructure
-
--   mapping of software artifacts to elements of this infrastructure
-
-For multiple environments or alternative deployments please copy and
-adapt this section of arc42 for all relevant environments.
-
-**Project-specific content**
 
 ### Overview
 
@@ -1082,11 +499,6 @@ experience mobile-first while still allowing efficient internal work.
 
 ## Infrastructure Level 2
 
-Here you can include the internal structure of (some) infrastructure
-elements from level 1.
-
-Please copy the structure from level 1 for each selected element.
-
 ### Production Linux Server
 
 The production server is the central infrastructure element during the
@@ -1118,95 +530,7 @@ backup approach for this setup is:
 This keeps the setup affordable while reducing the risk that a server
 failure also destroys all backups.
 
-<div style="page-break-after: always;"></div>
-
 # Cross-cutting Concepts
-
-<div class="formalpara-title">
-
-**Content**
-
-</div>
-
-This section describes overall, principal regulations and solution ideas
-that are relevant in multiple parts (= cross-cutting) of your system.
-Such concepts are often related to multiple building blocks. They can
-include many different topics, such as
-
--   models, especially domain models
-
--   architecture or design patterns
-
--   rules for using specific technology
-
--   principal, often technical decisions of an overarching (=
-    cross-cutting) nature
-
--   implementation rules
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Concepts form the basis for *conceptual integrity* (consistency,
-homogeneity) of the architecture. Thus, they are an important
-contribution to achieve inner qualities of your system.
-
-Some of these concepts cannot be assigned to individual building blocks,
-e.g. security or safety.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-The form can be varied:
-
--   concept papers with any kind of structure
-
--   cross-cutting model excerpts or scenarios using notations of the
-    architecture views
-
--   sample implementations, especially for technical concepts
-
--   reference to typical usage of standard frameworks (e.g. using
-    Hibernate for object/relational mapping)
-
-<div class="formalpara-title">
-
-**Structure**
-
-</div>
-
-A potential (but not mandatory) structure for this section could be:
-
--   Domain concepts
-
--   User Experience concepts (UX)
-
--   Safety and security concepts
-
--   Architecture and design patterns
-
--   "Under-the-hood"
-
--   development concepts
-
--   operational concepts
-
-Note: it might be difficult to assign individual concepts to one
-specific topic on this list.
-
-![Possible topics for crosscutting
-concepts](images/08-Crosscutting-Concepts-Structure-EN.png)
-
-See [Concepts](https://docs.arc42.org/section-8/) in the arc42
-documentation.
-
-**Project-specific content**
 
 The following concepts are documented because they affect several
 building blocks and support the main quality goals and constraints.
@@ -1307,57 +631,7 @@ Affected building blocks: Backend Monolith, Nginx, MySQL Database,
 External Auth Provider, Internal Payment Message Queue, Payment Worker,
 Stripe Payment Provider.
 
-<div style="page-break-after: always;"></div>
-
 # Architecture Decisions
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Important, expensive, large scale or risky architecture decisions
-including rationales. With "decisions" we mean selecting one alternative
-based on given criteria.
-
-Please use your judgement to decide whether an architectural decision
-should be documented here in this central section or whether you better
-document it locally (e.g. within the white box template of one building
-block).
-
-Avoid redundancy. Refer to section 4, where you already captured the
-most important decisions of your architecture.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Stakeholders of your system should be able to comprehend and retrace
-your decisions.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Various options:
-
--   ADR ([Documenting Architecture
-    Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions))
-    for every important decision
-
--   List or table, ordered by importance and consequences or:
-
--   more detailed in form of separate sections per decision
-
-See [Architecture Decisions](https://docs.arc42.org/section-9/) in the
-arc42 documentation. There you will find links and examples about ADR.
-
-**Project-specific content**
 
 The following decisions document the most important architecture choices
 that stakeholders must be able to understand and trace.
@@ -1368,75 +642,11 @@ that stakeholders must be able to understand and trace.
 | AD_2 | Accepted | Initial infrastructure costs must stay low, but the system still needs a growth path. | Cloud-first deployment, fully on-premises infrastructure. | Start on a rented Linux server and add cloud services later when scaling becomes necessary. The rented server remains available for backup purposes. | Positive: low initial cost and simple operations. Negative: the rented server can become a bottleneck and requires a later migration path. |
 | AD_3 | Accepted | Authentication is security-critical and too expensive to implement safely from scratch in the MVP phase. | Self-built authentication, external authentication provider. | Use an external authentication provider for registration, login, and token issuing. | Positive: reduced security and implementation risk. Negative: dependency on an external provider and its availability, pricing, and integration API. |
 | AD_4 | Accepted | Payment processing is business-critical, security-critical, and legally sensitive. | Self-built payment handling, another payment provider. | Use Stripe as external payment provider for ride payments and transaction references. | Positive: faster implementation and proven payment handling. Negative: dependency on Stripe fees, API availability, and provider rules. |
-
-<div style="page-break-after: always;"></div>
+| AD_5 | Accepted | The MVP needs map display, geocoding, reverse geocoding, route distance, and ETA information for ride search, booking, pricing support, and live tracking usability. Building and operating this data stack would be too expensive for the startup. | Self-hosted maps/routing stack, no external maps provider in the MVP, direct provider coupling from domain logic. | Use an external maps/geocoding/routing provider through a replaceable integration. Keep ride matching and price calculation rules inside youRide and send only the location data required for provider requests. | Positive: faster MVP delivery and familiar map/ETA usability. Negative: dependency on provider availability, pricing, API stability, usage limits, terms, and privacy handling for location data. |
 
 # Quality Requirements
 
-<div class="formalpara-title">
-
-**Content**
-
-</div>
-
-This section contains all quality requirements as quality tree with
-scenarios. The most important ones have already been described in
-section 1.2. (quality goals)
-
-Here you can also capture quality requirements with lesser priority,
-which will not create high risks when they are not fully achieved.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Since quality requirements will have a lot of influence on architectural
-decisions you should know for every stakeholder what is really important
-to them, concrete and measurable.
-
-See [Quality Requirements](https://docs.arc42.org/section-10/) in the
-arc42 documentation.
-
 ## Quality Tree
-
-<div class="formalpara-title">
-
-**Content**
-
-</div>
-
-The quality tree (as defined in ATAM – Architecture Tradeoff Analysis
-Method) with quality/evaluation scenarios as leafs.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-The tree structure with priorities provides an overview for a sometimes
-large number of quality requirements.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-The quality tree is a high-level overview of the quality goals and
-requirements:
-
--   tree-like refinement of the term "quality". Use "quality" or
-    "usefulness" as a root
-
--   a mind map with quality categories as main branches
-
-In any case the tree should include links to the scenarios of the
-following section.
-
-**Project-specific content**
 
 The following overview summarizes the relevant quality requirements for
 the MVP. The top three quality goals are already introduced in chapter 1
@@ -1455,54 +665,6 @@ and are refined here with concrete scenarios.
 
 ## Quality Scenarios
 
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-Concretization of (sometimes vague or implicit) quality requirements
-using (quality) scenarios.
-
-These scenarios describe what should happen when a stimulus arrives at
-the system.
-
-For architects, two kinds of scenarios are important:
-
--   Usage scenarios (also called application scenarios or use case
-    scenarios) describe the system’s runtime reaction to a certain
-    stimulus. This also includes scenarios that describe the system’s
-    efficiency or performance. Example: The system reacts to a user’s
-    request within one second.
-
--   Change scenarios describe a modification of the system or of its
-    immediate environment. Example: Additional functionality is
-    implemented or requirements for a quality attribute change.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Scenarios make quality requirements concrete and allow to more easily
-measure or decide whether they are fulfilled.
-
-Especially when you want to assess your architecture using methods like
-ATAM you need to describe your quality goals (from section 1.2) more
-precisely down to a level of scenarios that can be discussed and
-evaluated.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Tabular or free form text.
-
-**Project-specific content**
-
 The following quality scenarios make the most important quality
 requirements concrete and measurable enough for discussion and
 evaluation.
@@ -1518,46 +680,7 @@ evaluation.
 | QS_SEC_1 | Usage scenario | Security | An unauthenticated or wrongly authorized user calls a protected backend endpoint. | Normal operation. | Backend Monolith, External Auth Provider, Nginx. | The request is rejected and no protected data is returned. | Protected REST and WebSocket/TLS endpoints require valid authentication and role-based authorization. |
 | QS_PRIV_1 | Usage scenario | GDPR / privacy | A user profile, ride, location, payment reference, log entry, or backup contains personal data. | Normal operation and backup operation. | Backend Monolith, MySQL Database, Backup tooling, Logs. | Personal data is stored only for defined purposes, access is role-restricted, and sensitive data is not unnecessarily written to logs. | Data handling follows the GDPR-oriented governance rules from chapter 8 and backups are encrypted. |
 
-<div style="page-break-after: always;"></div>
-
 # Risks and Technical Debts
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-A list of identified technical risks or technical debts, ordered by
-priority
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-“Risk management is project management for grown-ups” (Tim Lister,
-Atlantic Systems Guild.)
-
-This should be your motto for systematic detection and evaluation of
-risks and technical debts in the architecture, which will be needed by
-management stakeholders (e.g. project managers, product owners) as part
-of the overall risk analysis and measurement planning.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-List of risks and/or technical debts, probably including suggested
-measures to minimize, mitigate or avoid risks or reduce technical debts.
-
-See [Risks and Technical Debt](https://docs.arc42.org/section-11/) in
-the arc42 documentation.
-
-**Project-specific content**
 
 The following risks and technical debts must be monitored during
 development and operation.
@@ -1566,47 +689,12 @@ development and operation.
 |----------|-----------------------|---------------------------------|-------------|-------------------|
 | 1 | Monolith can become too complex | `AD_1`, `QG_3` | The modular monolith is good for the MVP, but the code base can become difficult to understand and change when features, modules, and dependencies grow. | Keep module boundaries explicit, review dependencies regularly, and avoid direct access to implementation details of other modules. |
 | 2 | Single rented server as bottleneck and single point of failure | `AD_2`, `C_1`, `C_3` | Backend, MySQL, Nginx, and production infrastructure run on one rented Linux server during the MVP. A server failure or overload can affect the whole system. | Monitor server resources, define migration triggers, keep backups off-server, and prepare a later cloud scaling path. |
-| 3 | External provider dependency for authentication and payment | `AD_3`, `AD_4` | youRide depends on the availability, pricing, API stability, and terms of the external authentication provider and Stripe. Provider problems can block login and can delay final payment confirmation. | Keep provider integrations isolated, queue payment requests durably, use retries and idempotency keys, log provider failures, document fallback procedures, and store external transaction references consistently. |
+| 3 | External provider dependency for authentication, payment, and maps/routing | `AD_3`, `AD_4`, `AD_5` | youRide depends on the availability, pricing, API stability, usage limits, and terms of the external authentication provider, Stripe, and the maps/geocoding/routing provider. Provider problems can block login, delay final payment confirmation, or degrade route/ETA/geocoding-dependent booking and tracking views. | Keep provider integrations isolated, queue payment requests durably, use retries and idempotency keys where appropriate, log provider failures, monitor provider usage and costs, document fallback procedures, and store external transaction references consistently. |
 | 4 | GDPR and privacy risk for sensitive data | `C_5`, `QS_PRIV_1` | Customer profiles, driver profiles, location data, ride history, and payment references are sensitive personal data. Wrong access, excessive storage, or unsafe logs can create legal and trust problems. | Apply GDPR-oriented data governance, role-based access control, data minimization, retention/deletion rules, encrypted backups, and logging rules that avoid sensitive data. |
 | 5 | Monolithic architecture is limited for scaling | `AD_1`, `QG_3`, `QS_SCAL_1` | A monolith cannot scale individual business capabilities independently. If only live tracking, matching, or payment integration becomes heavily loaded, the whole backend must initially be scaled together. | Keep the monolith modular, monitor load by module or use case where possible, and use the cloud migration path when the rented server is no longer sufficient. |
 | 6 | Backup and restore risk | `C_3`, Deployment View | Backups are only useful if they are complete, encrypted, stored away from the production server, and restorable. Without restore tests, the team might discover backup problems too late. | Automate database and configuration backups, copy them to off-server storage, define retention, and perform regular restore tests. |
 
-<div style="page-break-after: always;"></div>
-
 # Glossary
-
-<div class="formalpara-title">
-
-**Contents**
-
-</div>
-
-The most important domain and technical terms that your stakeholders use
-when discussing the system.
-
-You can also see the glossary as source for translations if you work in
-multi-language teams.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-You should clearly define your terms, so that all stakeholders
-
--   have an identical understanding of these terms
-
--   do not use synonyms and homonyms
-
-A table with columns \<Term> and \<Definition>.
-
-Potentially more columns in case you need translations.
-
-See [Glossary](https://docs.arc42.org/section-12/) in the arc42
-documentation.
-
-**Project-specific content**
 
 | Term | Definition |
 |------|------------|
