@@ -33,11 +33,11 @@ additional revenue streams are not part of the initial scope.
 
 | ID | Business Goal | Description |
 |----|---------------|-------------|
-| BG_1 | Fast market entry | Build a useful MVP quickly in order to validate the Austrian market. |
-| BG_2 | Paying customers | Win active customers and drivers and generate revenue through commissions per completed ride. |
-| BG_3 | Low operating costs | Keep infrastructure and tool costs low because the founders provide and acquire the initial capital themselves. |
-| BG_4 | Local alternative | Offer an Austrian ride sharing alternative that is cheaper than large international providers. |
-| BG_5 | Measurable growth | Track active customers, active drivers, completed rides, and operating costs as main success indicators. |
+| <a id="BG_1"></a>[BG_1](#BG_1) | Fast market entry | Build a useful MVP quickly in order to validate the Austrian market. |
+| <a id="BG_2"></a>[BG_2](#BG_2) | Paying customers | Win active customers and drivers and generate revenue through commissions per completed ride. |
+| <a id="BG_3"></a>[BG_3](#BG_3) | Low operating costs | Keep infrastructure and tool costs low because the founders provide and acquire the initial capital themselves. |
+| <a id="BG_4"></a>[BG_4](#BG_4) | Local alternative | Offer an Austrian ride sharing alternative that is cheaper than large international providers. |
+| <a id="BG_5"></a>[BG_5](#BG_5) | Measurable growth | Track active customers, active drivers, completed rides, and operating costs as main success indicators. |
 <br><br>
 
 ### Functional Requirements Overview
@@ -50,17 +50,17 @@ because both groups have different workflows and data requirements.
 
 | ID | Essential Feature | Description |
 |----|-------------------|-------------|
-| REQ_1 | Register account | Customers and drivers can create separate accounts and access the application. |
-| REQ_2 | Verify driver | The company can verify drivers before they offer rides on the platform. |
-| REQ_3 | Search for rides | Customers can search for available spontaneous or planned rides that match their travel needs. |
-| REQ_4 | Book a ride | Customers can request or book a ride and receive a calculated ride price before the ride starts. |
-| REQ_5 | Match driver automatically | The system automatically matches a suitable driver to a customer request. |
-| REQ_6 | Accept or decline ride request | Drivers can accept or decline incoming ride requests. |
-| REQ_7 | Track ride | Customers and drivers can track the ride with live GPS on a map and the status values requested, accepted, in progress, completed, or cancelled. |
-| REQ_8 | Cancel ride | Customers and drivers can cancel a ride before completion. |
-| REQ_9 | Complete ride and process payment | Drivers and customers can complete a ride once the trip has finished, and payment is processed through the external payment provider. |
-| REQ_10 | View ride history | Customers and drivers can view previously completed or cancelled rides. |
-| REQ_11 | Administer MVP | The founding team can review users, verify drivers, inspect rides, and access basic operational data. |
+| <a id="REQ_1"></a>[REQ_1](#REQ_1) | Register account | Customers and drivers can create separate accounts and access the application. |
+| <a id="REQ_2"></a>[REQ_2](#REQ_2) | Verify driver | The company can verify drivers before they offer rides on the platform. |
+| <a id="REQ_3"></a>[REQ_3](#REQ_3) | Search for rides | Customers can search for available spontaneous or planned rides that match their travel needs. |
+| <a id="REQ_4"></a>[REQ_4](#REQ_4) | Book a ride | Customers can request or book a ride and receive a calculated ride price before the ride starts. |
+| <a id="REQ_5"></a>[REQ_5](#REQ_5) | Match driver automatically | The system automatically matches a suitable driver to a customer request. |
+| <a id="REQ_6"></a>[REQ_6](#REQ_6) | Accept or decline ride request | Drivers can accept or decline incoming ride requests. |
+| <a id="REQ_7"></a>[REQ_7](#REQ_7) | Track ride | Customers and drivers can track the ride with live GPS on a map and the status values requested, accepted, in progress, completed, or cancelled. |
+| <a id="REQ_8"></a>[REQ_8](#REQ_8) | Cancel ride | Customers and drivers can cancel a ride before completion. |
+| <a id="REQ_9"></a>[REQ_9](#REQ_9) | Complete ride and process payment | Drivers and customers can complete a ride once the trip has finished, and payment is processed through the external payment provider. |
+| <a id="REQ_10"></a>[REQ_10](#REQ_10) | View ride history | Customers and drivers can view previously completed or cancelled rides. |
+| <a id="REQ_11"></a>[REQ_11](#REQ_11) | Administer MVP | The founding team can review users, verify drivers, inspect rides, and access basic operational data. |
 <br>
 
 ### Requirements Sources
@@ -88,9 +88,9 @@ architectural decisions.
 
 | ID | Priority | Quality Goal | Motivation | Concrete Scenario |
 |----|----------|--------------|------------|-------------------|
-| QG_1 | 1 | Functional suitability | Price calculations, driver matching, ride data, location data, ride status changes, and communication between drivers and customers must work correctly and reliably. | When a customer books a ride, the system calculates a price, assigns a suitable driver, stores the ride, and shows the same ride status to customer and driver. |
-| QG_2 | 2 | Usability | The application must be intuitive and usable without documentation for customers and drivers, because an easy-to-use platform helps win early users and supports fast startup growth. | A new customer can register, search for a ride, see the price, and request the ride without reading external instructions. |
-| QG_3 | 3 | Scalability | The system must support growth in active customers, active drivers, completed rides, and later cloud usage, without creating high initial infrastructure costs. | When demand grows beyond the rented Linux server, the architecture allows migration of selected infrastructure parts to cloud services while keeping the server available for backup. |
+| <a id="QG_1"></a>[QG_1](#QG_1) | 1 | Functional suitability | Price calculations, driver matching, ride data, location data, ride status changes, and communication between drivers and customers must work correctly and reliably. | When a customer books a ride, the system calculates a price, assigns a suitable driver, stores the ride, and shows the same ride status to customer and driver. |
+| <a id="QG_2"></a>[QG_2](#QG_2) | 2 | Usability | The application must be intuitive and usable without documentation for customers and drivers, because an easy-to-use platform helps win early users and supports fast startup growth. | A new customer can register, search for a ride, see the price, and request the ride without reading external instructions. |
+| <a id="QG_3"></a>[QG_3](#QG_3) | 3 | Scalability | The system must support growth in active customers, active drivers, completed rides, and later cloud usage, without creating high initial infrastructure costs. | When demand grows beyond the rented Linux server, the architecture allows migration of selected infrastructure parts to cloud services while keeping the server available for backup. |
 <br><br>
 
 ## Stakeholders
@@ -119,11 +119,11 @@ that later decisions can be traced back to the actual restrictions.
 
 | ID | Category | Constraint | Background and Motivation | Architectural Consequence |
 |----|----------|------------|---------------------------|---------------------------|
-| C_1 | Budget / operational | The initial production system runs on a rented Linux server. | This keeps fixed infrastructure costs low for the startup during the MVP phase. | The initial deployment must be simple enough to run on one server and must not depend on a complex cloud setup. |
-| C_2 | Budget | Recurring infrastructure and tool costs must be kept as low as reasonably possible. | The founders provide and acquire the initial capital themselves. | The architecture must favor a lean MVP, avoid unnecessary paid services, and keep operating costs visible. |
-| C_3 | Operational / scalability | Cloud services are used later when scaling becomes necessary; the rented server remains available for backup purposes. | The startup wants to start cheaply but still keep a growth path for increasing customer, driver, and ride numbers. | The system must avoid unnecessary vendor lock-in and keep deployment, data export, and backup concepts compatible with a later cloud migration. |
-| C_4 | Organizational | The initial company team consists of three entrepreneurs/developers, one DevOps/network employee, and one controlling employee. | Development, operations, networking, and financial control are handled by a small internal team. | The architecture, deployment process, monitoring, and documentation must be understandable and maintainable by a small team. |
-| C_5 | Compliance | Data governance is based on GDPR. | Customer profiles, driver profiles, ride data, and location data are personal data. | Privacy, security, retention, access control, and deletion concepts must respect GDPR principles from the beginning. |
+| <a id="C_1"></a>[C_1](#C_1) | Budget / operational | The initial production system runs on a rented Linux server. | This keeps fixed infrastructure costs low for the startup during the MVP phase. | The initial deployment must be simple enough to run on one server and must not depend on a complex cloud setup. |
+| <a id="C_2"></a>[C_2](#C_2) | Budget | Recurring infrastructure and tool costs must be kept as low as reasonably possible. | The founders provide and acquire the initial capital themselves. | The architecture must favor a lean MVP, avoid unnecessary paid services, and keep operating costs visible. |
+| <a id="C_3"></a>[C_3](#C_3) | Operational / scalability | Cloud services are used later when scaling becomes necessary; the rented server remains available for backup purposes. | The startup wants to start cheaply but still keep a growth path for increasing customer, driver, and ride numbers. | The system must avoid unnecessary vendor lock-in and keep deployment, data export, and backup concepts compatible with a later cloud migration. |
+| <a id="C_4"></a>[C_4](#C_4) | Organizational | The initial company team consists of three entrepreneurs/developers, one DevOps/network employee, and one controlling employee. | Development, operations, networking, and financial control are handled by a small internal team. | The architecture, deployment process, monitoring, and documentation must be understandable and maintainable by a small team. |
+| <a id="C_5"></a>[C_5](#C_5) | Compliance | Data governance is based on GDPR. | Customer profiles, driver profiles, ride data, and location data are personal data. | Privacy, security, retention, access control, and deletion concepts must respect GDPR principles from the beginning. |
 <br>
 
 ### Non-constraints
@@ -231,13 +231,13 @@ decisions.
 
 | Goal / Requirement | Architectural Approach | Rationale / Linked Constraints and Goals |
 |--------------------|------------------------|------------------------------------------|
-| Fast market entry and low operating costs (`BG_1`, `BG_3`, `C_1`, `C_2`) | Build the MVP as a modular monolith. The system is deployed as one backend application, but internally structured into clear modules such as identity, ride management, payment integration, tracking, and administration. | A modular monolith keeps deployment and operations simple for the small team while still supporting maintainability through internal boundaries. |
+| Fast market entry and low operating costs ([`BG_1`](#BG_1), [`BG_3`](#BG_3), [`C_1`](#C_1), [`C_2`](#C_2)) | Build the MVP as a modular monolith. The system is deployed as one backend application, but internally structured into clear modules such as identity, ride management, payment integration, tracking, and administration. | A modular monolith keeps deployment and operations simple for the small team while still supporting maintainability through internal boundaries. |
 | Familiar and productive technology stack | Use Java for the backend monolith, Angular for the frontend, MySQL for persistence, REST APIs for normal app communication, and WebSocket communication for live tracking. | These technologies are established, affordable, and suitable for the planned MVP scope. They also support the chosen client-server and monolithic architecture. |
-| External authentication and payment (`REQ_1`, `REQ_4`, `REQ_9`, `C_2`) | Use an external authentication provider and Stripe as external payment provider. Payment requests are handed off through an internal durable queue before Stripe communication. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup, while queued payment handoff reduces the effect of temporary network or provider errors. |
-| External maps, geocoding, and routing (`REQ_3`, `REQ_4`, `REQ_5`, `REQ_7`, `AD_5`, `C_2`) | Use an external maps/geocoding/routing provider through a replaceable integration for map display, geocoding, reverse geocoding, route distance, and ETA data. | Building and operating map, routing, and geocoding data is too expensive for the MVP. Keeping the provider behind an integration preserves youRide ownership of matching, price calculation rules, and live tracking state while reducing implementation effort. |
-| Cost-efficient deployment and later scalability (`QG_3`, `C_1`, `C_3`) | Start on a rented Linux server. When demand grows, add cloud services for scaling while keeping the rented server available for backup purposes. | This keeps initial costs low but leaves a realistic growth path for increasing customer, driver, and ride numbers. |
-| Functional suitability and reliability (`QG_1`) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, route and ETA handling, ride status changes, matching, persistence, authentication handoff, maps/routing integration, and payment integration must work reliably. |
-| Security and data protection (`C_5`) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
+| External authentication and payment ([`REQ_1`](#REQ_1), [`REQ_4`](#REQ_4), [`REQ_9`](#REQ_9), [`C_2`](#C_2)) | Use an external authentication provider and Stripe as external payment provider. Payment requests are handed off through an internal durable queue before Stripe communication. | Authentication and payment are complex and security-critical. Delegating them reduces implementation effort and risk for the startup, while queued payment handoff reduces the effect of temporary network or provider errors. |
+| External maps, geocoding, and routing ([`REQ_3`](#REQ_3), [`REQ_4`](#REQ_4), [`REQ_5`](#REQ_5), [`REQ_7`](#REQ_7), [`AD_5`](#AD_5), [`C_2`](#C_2)) | Use an external maps/geocoding/routing provider through a replaceable integration for map display, geocoding, reverse geocoding, route distance, and ETA data. | Building and operating map, routing, and geocoding data is too expensive for the MVP. Keeping the provider behind an integration preserves youRide ownership of matching, price calculation rules, and live tracking state while reducing implementation effort. |
+| Cost-efficient deployment and later scalability ([`QG_3`](#QG_3), [`C_1`](#C_1), [`C_3`](#C_3)) | Start on a rented Linux server. When demand grows, add cloud services for scaling while keeping the rented server available for backup purposes. | This keeps initial costs low but leaves a realistic growth path for increasing customer, driver, and ride numbers. |
+| Functional suitability and reliability ([`QG_1`](#QG_1)) | Use unit tests and integration tests for important business logic and external interfaces. | Price calculation, route and ETA handling, ride status changes, matching, persistence, authentication handoff, maps/routing integration, and payment integration must work reliably. |
+| Security and data protection ([`C_5`](#C_5)) | Use penetration tests and GDPR-oriented data governance. | Customer, driver, ride, location, and payment reference data require careful protection from the beginning. |
 <br><br>
 
 # Building Block View
@@ -277,13 +277,13 @@ costly to implement from scratch.
 
 | Name | Type | Responsibility | Interfaces | Fulfilled Requirements |
 |------|------|----------------|------------|------------------------|
-| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, driver verification, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith; HTTPS / Maps API for map display where client-side map rendering is used. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
-| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to the authentication provider and maps/geocoding/routing provider, durable payment queue access, and internal database connection to MySQL. | `REQ_1` to `REQ_11` |
-| MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | `REQ_1`, `REQ_2`, `REQ_3`, `REQ_4`, `REQ_5`, `REQ_6`, `REQ_7`, `REQ_8`, `REQ_9`, `REQ_10`, `REQ_11` |
-| Internal Payment Message Queue | Contained building block | Durably stores payment requests, retry metadata, and idempotency information until the payment worker can process them. | Internal durable queue channel used by Payment Integration and the Payment Worker. | `REQ_9`, `BG_2`, `QG_1` |
-| External Auth Provider | External system | Handles registration, login, authentication, and token issuing for customer, driver, and internal users. | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect. | `REQ_1` |
-| External Maps/Geocoding/Routing Provider | External system | Supplies map display data, geocoding, reverse geocoding, route distance, and ETA information for ride search, booking, pricing support, and live tracking usability. | HTTPS / Maps, Routing, and Geocoding APIs used by the backend and, where needed, by the mobile app/frontend. | `REQ_3`, `REQ_4`, `REQ_5`, `REQ_7`, `AD_5` |
-| Stripe Payment Provider | External system | Processes queued ride payments and returns payment status and transaction references. | HTTPS / Stripe API used by the payment worker. | `REQ_9`, `BG_2` |
+| youRide Mobile App / Frontend | Contained building block | Provides the user interface for customers, drivers, administrators, and controlling. It supports registration, driver verification, ride search, booking, live tracking, cancellations, ride completion, ride history, administration, and reporting access. | HTTPS/REST and WebSocket/TLS to the backend monolith; HTTPS / Maps API for map display where client-side map rendering is used. | [`REQ_1`](#REQ_1), [`REQ_2`](#REQ_2), [`REQ_3`](#REQ_3), [`REQ_4`](#REQ_4), [`REQ_6`](#REQ_6), [`REQ_7`](#REQ_7), [`REQ_8`](#REQ_8), [`REQ_9`](#REQ_9), [`REQ_10`](#REQ_10), [`REQ_11`](#REQ_11) |
+| youRide Backend Monolith | Contained building block | Implements the central application logic for identity integration, customer and driver management, driver verification, ride matching, ride status handling, live tracking, payment integration, administration, and reporting. | HTTPS/REST and WebSocket/TLS for the frontend, HTTPS to the authentication provider and maps/geocoding/routing provider, durable payment queue access, and internal database connection to MySQL. | [`REQ_1`](#REQ_1) to [`REQ_11`](#REQ_11) |
+| MySQL Database | Contained building block | Stores customer profiles, driver profiles, verification status, ride data, ride status, calculated prices, payment references, and reporting data. | Internal database connection from the backend monolith. | [`REQ_1`](#REQ_1), [`REQ_2`](#REQ_2), [`REQ_3`](#REQ_3), [`REQ_4`](#REQ_4), [`REQ_5`](#REQ_5), [`REQ_6`](#REQ_6), [`REQ_7`](#REQ_7), [`REQ_8`](#REQ_8), [`REQ_9`](#REQ_9), [`REQ_10`](#REQ_10), [`REQ_11`](#REQ_11) |
+| Internal Payment Message Queue | Contained building block | Durably stores payment requests, retry metadata, and idempotency information until the payment worker can process them. | Internal durable queue channel used by Payment Integration and the Payment Worker. | [`REQ_9`](#REQ_9), [`BG_2`](#BG_2), [`QG_1`](#QG_1) |
+| External Auth Provider | External system | Handles registration, login, authentication, and token issuing for customer, driver, and internal users. | HTTPS, based on standard authentication protocols such as OAuth 2.0 / OpenID Connect. | [`REQ_1`](#REQ_1) |
+| External Maps/Geocoding/Routing Provider | External system | Supplies map display data, geocoding, reverse geocoding, route distance, and ETA information for ride search, booking, pricing support, and live tracking usability. | HTTPS / Maps, Routing, and Geocoding APIs used by the backend and, where needed, by the mobile app/frontend. | [`REQ_3`](#REQ_3), [`REQ_4`](#REQ_4), [`REQ_5`](#REQ_5), [`REQ_7`](#REQ_7), [`AD_5`](#AD_5) |
+| Stripe Payment Provider | External system | Processes queued ride payments and returns payment status and transaction references. | HTTPS / Stripe API used by the payment worker. | [`REQ_9`](#REQ_9), [`BG_2`](#BG_2) |
 <br><br>
 
 ### Important Interfaces
@@ -407,7 +407,7 @@ blocks.
 
 ### Quality and Risk Notes
 
--   Supports `REQ_3` to `REQ_10`, `QG_1`, `QG_2`, and `QG_3`.
+-   Supports [`REQ_3`](#REQ_3) to [`REQ_10`](#REQ_10), [`QG_1`](#QG_1), [`QG_2`](#QG_2), and [`QG_3`](#QG_3).
 -   Direct database access is avoided through the Ride Repository Port.
 -   Route distance and ETA data are obtained through the external
     maps/geocoding/routing provider, while price rules remain inside
@@ -453,7 +453,7 @@ critical Stripe interface.
 
 **Notable aspects:**
 
--   The scenario supports `REQ_3`, `REQ_4`, and `REQ_5`.
+-   The scenario supports [`REQ_3`](#REQ_3), [`REQ_4`](#REQ_4), and [`REQ_5`](#REQ_5).
 -   Authentication is external, but ride matching and price calculation
     remain core youRide functionality.
 -   Maps, route distance, and ETA data come from the external
@@ -487,7 +487,7 @@ critical Stripe interface.
 
 **Notable aspects:**
 
--   The scenario supports `REQ_6` and `REQ_7`.
+-   The scenario supports [`REQ_6`](#REQ_6) and [`REQ_7`](#REQ_7).
 -   REST is used for the accept command, while WebSocket/TLS is used for
     continuous live tracking updates.
 -   Ride status changes are persisted so that both customer and driver
@@ -527,7 +527,7 @@ critical Stripe interface.
 
 **Notable aspects:**
 
--   The scenario supports `REQ_9`, `REQ_10`, and `BG_2`.
+-   The scenario supports [`REQ_9`](#REQ_9), [`REQ_10`](#REQ_10), and [`BG_2`](#BG_2).
 -   Stripe is the only external payment system in the MVP.
 -   The ride can be completed after the payment request is durably
     queued; the payment status can remain `pending` or `retrying` until
@@ -563,8 +563,8 @@ critical Stripe interface.
 
 **Notable aspects:**
 
--   The scenario supports `REQ_9`, `REQ_10`, `REQ_11`, `BG_2`,
-    `QS_REL_1`, and `QS_PRIV_1`.
+-   The scenario supports [`REQ_9`](#REQ_9), [`REQ_10`](#REQ_10), [`REQ_11`](#REQ_11), [`BG_2`](#BG_2),
+    [`QS_REL_1`](#QS_REL_1), and [`QS_PRIV_1`](#QS_PRIV_1).
 -   The ride status remains `completed` even though the payment status is
     `failed`; this keeps the ride history and reporting data truthful.
 -   Permanent payment failures are not retried endlessly, which protects
@@ -602,7 +602,7 @@ critical Stripe interface.
 **Notable aspects:**
 
 
--   The scenario supports `REQ_9`, `REQ_10`, `BG_2`, `QS_REL_2`, and the
+-   The scenario supports [`REQ_9`](#REQ_9), [`REQ_10`](#REQ_10), [`BG_2`](#BG_2), [`QS_REL_2`](#QS_REL_2), and the
     mitigation of external provider dependency risks.
 -   The ride remains `completed` while payment processing continues in
     the background, so the user workflow is not interrupted by temporary
@@ -622,9 +622,9 @@ critical Stripe interface.
 
 The MVP is deployed with a cost-efficient three-environment setup:
 development, test/staging, and production. Production initially runs on
-one rented Linux server to satisfy the budget constraints `C_1` and
-`C_2`. When demand grows, cloud services can be added later according to
-constraint `C_3`.
+one rented Linux server to satisfy the budget constraints [`C_1`](#C_1) and
+[`C_2`](#C_2). When demand grows, cloud services can be added later according to
+constraint [`C_3`](#C_3).
 <br><br>
 
 | Environment | Infrastructure | Purpose |
@@ -848,11 +848,11 @@ The following decisions document the most important architecture choices.
 
 | ID | Status | Problem / Context | Considered Alternatives | Decision and Rationale | Consequences |
 |----|--------|-------------------|-------------------------|------------------------|--------------|
-| AD_1 | Accepted | The startup needs a fast, cost-efficient MVP that can be built and operated by a small team. | Microservices, service-oriented architecture. | Use a modular monolith. It keeps deployment simple and affordable while internal module boundaries support maintainability. | Positive: fast implementation and simple operation. Negative: scaling individual business capabilities independently is not possible in the MVP architecture. |
-| AD_2 | Accepted | Initial infrastructure costs must stay low, but the system still needs a growth path. | Cloud-first deployment, fully on-premises infrastructure. | Start on a rented Linux server and add cloud services later when scaling becomes necessary. The rented server remains available for backup purposes. | Positive: low initial cost and simple operations. Negative: the rented server can become a bottleneck and requires a later migration path. |
-| AD_3 | Accepted | Authentication is security-critical and too expensive to implement safely from scratch in the MVP phase. | Self-built authentication, external authentication provider. | Use an external authentication provider for registration, login, and token issuing. | Positive: reduced security and implementation risk. Negative: dependency on an external provider and its availability, pricing, and integration API. |
-| AD_4 | Accepted | Payment processing is business-critical, security-critical, and legally sensitive. | Self-built payment handling, another payment provider. | Use Stripe as external payment provider for ride payments and transaction references. | Positive: faster implementation and proven payment handling. Negative: dependency on Stripe fees, API availability, and provider rules. |
-| AD_5 | Accepted | The MVP needs map display, geocoding, reverse geocoding, route distance, and ETA information for ride search, booking, pricing support, and live tracking usability. Building and operating this data stack would be too expensive for the startup. | Self-hosted maps/routing stack, no external maps provider in the MVP, direct provider coupling from domain logic. | Use an external maps/geocoding/routing provider through a replaceable integration. Keep ride matching and price calculation rules inside youRide and send only the location data required for provider requests. | Positive: faster MVP delivery and familiar map/ETA usability. Negative: dependency on provider availability, pricing, API stability, usage limits, terms, and privacy handling for location data. |
+| <a id="AD_1"></a>[AD_1](#AD_1) | Accepted | The startup needs a fast, cost-efficient MVP that can be built and operated by a small team. | Microservices, service-oriented architecture. | Use a modular monolith. It keeps deployment simple and affordable while internal module boundaries support maintainability. | Positive: fast implementation and simple operation. Negative: scaling individual business capabilities independently is not possible in the MVP architecture. |
+| <a id="AD_2"></a>[AD_2](#AD_2) | Accepted | Initial infrastructure costs must stay low, but the system still needs a growth path. | Cloud-first deployment, fully on-premises infrastructure. | Start on a rented Linux server and add cloud services later when scaling becomes necessary. The rented server remains available for backup purposes. | Positive: low initial cost and simple operations. Negative: the rented server can become a bottleneck and requires a later migration path. |
+| <a id="AD_3"></a>[AD_3](#AD_3) | Accepted | Authentication is security-critical and too expensive to implement safely from scratch in the MVP phase. | Self-built authentication, external authentication provider. | Use an external authentication provider for registration, login, and token issuing. | Positive: reduced security and implementation risk. Negative: dependency on an external provider and its availability, pricing, and integration API. |
+| <a id="AD_4"></a>[AD_4](#AD_4) | Accepted | Payment processing is business-critical, security-critical, and legally sensitive. | Self-built payment handling, another payment provider. | Use Stripe as external payment provider for ride payments and transaction references. | Positive: faster implementation and proven payment handling. Negative: dependency on Stripe fees, API availability, and provider rules. |
+| <a id="AD_5"></a>[AD_5](#AD_5) | Accepted | The MVP needs map display, geocoding, reverse geocoding, route distance, and ETA information for ride search, booking, pricing support, and live tracking usability. Building and operating this data stack would be too expensive for the startup. | Self-hosted maps/routing stack, no external maps provider in the MVP, direct provider coupling from domain logic. | Use an external maps/geocoding/routing provider through a replaceable integration. Keep ride matching and price calculation rules inside youRide and send only the location data required for provider requests. | Positive: faster MVP delivery and familiar map/ETA usability. Negative: dependency on provider availability, pricing, API stability, usage limits, terms, and privacy handling for location data. |
 <br><br>
 
 # Quality Requirements
@@ -866,13 +866,13 @@ and are refined here with concrete scenarios.
 
 | Quality Category | Priority | Related Goals / Constraints | Refinement | Related Scenarios |
 |------------------|----------|-----------------------------|------------|-------------------|
-| Functional suitability | High | `QG_1` | Correct price calculation using route distance/ETA data, automatic driver matching, consistent ride status, and correct ride/payment data. | `QS_FUNC_1`, `QS_FUNC_2` |
-| Usability | High | `QG_2` | Customers and drivers can use the core ride workflow without external instructions. | `QS_USAB_1` |
-| Scalability | High | `QG_3`, `C_3` | The system can handle a growing customer base and has a planned path from rented server to cloud services. | `QS_SCAL_1` |
-| Performance efficiency | Medium | `QG_1`, `QG_2` | Important user actions should respond in less than two seconds under normal MVP load. | `QS_PERF_1` |
-| Live tracking timeliness | Medium | `REQ_7` | Live GPS updates should be visible frequently enough to make active rides transparent. | `QS_PERF_2` |
-| Payment resilience | High | `AD_4`, `REQ_9`, Risk 3 | Payment processing must survive permanent payment failures and temporary Stripe outages without corrupting ride or payment state. | `QS_REL_1`, `QS_REL_2` |
-| Security and GDPR | High | `C_5` | Sensitive customer, driver, location, ride, and payment reference data must be protected. | `QS_SEC_1`, `QS_PRIV_1` |
+| Functional suitability | High | [`QG_1`](#QG_1) | Correct price calculation using route distance/ETA data, automatic driver matching, consistent ride status, and correct ride/payment data. | [`QS_FUNC_1`](#QS_FUNC_1), [`QS_FUNC_2`](#QS_FUNC_2) |
+| Usability | High | [`QG_2`](#QG_2) | Customers and drivers can use the core ride workflow without external instructions. | [`QS_USAB_1`](#QS_USAB_1) |
+| Scalability | High | [`QG_3`](#QG_3), [`C_3`](#C_3) | The system can handle a growing customer base and has a planned path from rented server to cloud services. | [`QS_SCAL_1`](#QS_SCAL_1) |
+| Performance efficiency | Medium | [`QG_1`](#QG_1), [`QG_2`](#QG_2) | Important user actions should respond in less than two seconds under normal MVP load. | [`QS_PERF_1`](#QS_PERF_1) |
+| Live tracking timeliness | Medium | [`REQ_7`](#REQ_7) | Live GPS updates should be visible frequently enough to make active rides transparent. | [`QS_PERF_2`](#QS_PERF_2) |
+| Payment resilience | High | [`AD_4`](#AD_4), [`REQ_9`](#REQ_9), Risk 3 | Payment processing must survive permanent payment failures and temporary Stripe outages without corrupting ride or payment state. | [`QS_REL_1`](#QS_REL_1), [`QS_REL_2`](#QS_REL_2) |
+| Security and GDPR | High | [`C_5`](#C_5) | Sensitive customer, driver, location, ride, and payment reference data must be protected. | [`QS_SEC_1`](#QS_SEC_1), [`QS_PRIV_1`](#QS_PRIV_1) |
 <br><br>
 
 ![Quality Tree](./resource/images/quality_tree.png)
@@ -887,16 +887,16 @@ evaluation.
 
 | ID | Type | Quality Attribute | Source / Stimulus | Environment | Affected Artifact | Response | Response Measure |
 |----|------|-------------------|-------------------|-------------|-------------------|----------|------------------|
-| QS_FUNC_1 | Usage scenario | Functional suitability | A customer books a ride with pickup, destination, and desired time. | Normal MVP operation. | Ride Management & Matching, External Maps/Geocoding/Routing Provider, Persistence, Mobile App / Frontend. | The system retrieves route distance/ETA data, calculates the price, matches a suitable verified driver, stores the ride, and returns the booking result. | Ride data, calculated price, selected driver, and initial status are stored consistently and shown to the customer. |
-| QS_FUNC_2 | Usage scenario | Functional suitability | A ride status changes from requested to accepted, in progress, completed, or cancelled. | Normal MVP operation. | Ride Management & Matching, Live Tracking, Persistence, Mobile App / Frontend. | The status change is validated, persisted, and shown consistently to customer and driver. | Customer and driver see the same ride status after the update. |
-| QS_USAB_1 | Usage scenario | Usability | A new customer wants to book a ride without reading external documentation. | First-time usage on the mobile app. | Mobile App / Frontend, Backend Monolith. | The customer can register, search for a ride, see the calculated price, and request the ride through an intuitive workflow. | The customer can complete the booking workflow without external instructions. |
-| QS_SCAL_1 | Change scenario | Scalability | The customer base and ride volume grow beyond what the rented Linux server can comfortably handle. | Growth phase after MVP validation. | Deployment infrastructure, Backend Monolith, MySQL Database, Backup tooling. | Selected infrastructure parts can be moved to cloud services while the rented server remains available for backup. | Migration planning can reuse the existing deployment, data export, and backup concepts without redesigning the whole system. |
-| QS_PERF_1 | Usage scenario | Performance efficiency | A customer searches for or books a ride. | Normal MVP operation. | Mobile App / Frontend, Backend Monolith, MySQL Database. | The system processes the request and returns the result. | Search and booking responses should complete in less than 2 seconds under normal MVP load. |
-| QS_PERF_2 | Usage scenario | Live tracking timeliness | A driver sends live GPS updates during an active ride. | Active ride with WebSocket/TLS connection. | Live Tracking, Mobile App / Frontend, Backend Monolith. | The backend receives and distributes live location and ride status updates. | Location updates should be sent approximately every 2-3 seconds during an active ride. |
-| QS_REL_1 | Usage scenario | Payment resilience | Stripe rejects a queued payment request with a permanent payment error. | Completed ride with queued payment request. | Payment Integration, Payment Worker, Internal Payment Message Queue, Stripe Payment Provider, Persistence, Administration & Reporting. | Payment status is changed from `pending` to `failed`, the queue message is acknowledged without endless retries, and the failure is visible for operational review. | Ride status remains `completed`, payment status is `failed`, no sensitive payment data is logged, and the founding team can resolve the discrepancy. |
-| QS_REL_2 | Usage scenario | Payment resilience | Stripe is temporarily unavailable when the payment worker processes a queued payment request. | Provider outage or network timeout. | Payment Integration, Payment Worker, Internal Payment Message Queue, Stripe Payment Provider, Persistence. | Payment request remains retryable with backoff and the same idempotency key until Stripe recovers or operational review is needed. | The customer is not double-charged, ride status is not corrupted, and the final payment status/reference is stored after recovery. |
-| QS_SEC_1 | Usage scenario | Security | An unauthenticated or wrongly authorized user calls a protected backend endpoint. | Normal operation. | Backend Monolith, External Auth Provider, Nginx. | The request is rejected and no protected data is returned. | Protected REST and WebSocket/TLS endpoints require valid authentication and role-based authorization. |
-| QS_PRIV_1 | Usage scenario | GDPR / privacy | A user profile, ride, location, payment reference, log entry, or backup contains personal data. | Normal operation and backup operation. | Backend Monolith, MySQL Database, Backup tooling, Logs. | Personal data is stored only for defined purposes, access is role-restricted, and sensitive data is not unnecessarily written to logs. | Data handling follows the GDPR-oriented governance rules from chapter 8 and backups are encrypted. |
+| <a id="QS_FUNC_1"></a>[QS_FUNC_1](#QS_FUNC_1) | Usage scenario | Functional suitability | A customer books a ride with pickup, destination, and desired time. | Normal MVP operation. | Ride Management & Matching, External Maps/Geocoding/Routing Provider, Persistence, Mobile App / Frontend. | The system retrieves route distance/ETA data, calculates the price, matches a suitable verified driver, stores the ride, and returns the booking result. | Ride data, calculated price, selected driver, and initial status are stored consistently and shown to the customer. |
+| <a id="QS_FUNC_2"></a>[QS_FUNC_2](#QS_FUNC_2) | Usage scenario | Functional suitability | A ride status changes from requested to accepted, in progress, completed, or cancelled. | Normal MVP operation. | Ride Management & Matching, Live Tracking, Persistence, Mobile App / Frontend. | The status change is validated, persisted, and shown consistently to customer and driver. | Customer and driver see the same ride status after the update. |
+| <a id="QS_USAB_1"></a>[QS_USAB_1](#QS_USAB_1) | Usage scenario | Usability | A new customer wants to book a ride without reading external documentation. | First-time usage on the mobile app. | Mobile App / Frontend, Backend Monolith. | The customer can register, search for a ride, see the calculated price, and request the ride through an intuitive workflow. | The customer can complete the booking workflow without external instructions. |
+| <a id="QS_SCAL_1"></a>[QS_SCAL_1](#QS_SCAL_1) | Change scenario | Scalability | The customer base and ride volume grow beyond what the rented Linux server can comfortably handle. | Growth phase after MVP validation. | Deployment infrastructure, Backend Monolith, MySQL Database, Backup tooling. | Selected infrastructure parts can be moved to cloud services while the rented server remains available for backup. | Migration planning can reuse the existing deployment, data export, and backup concepts without redesigning the whole system. |
+| <a id="QS_PERF_1"></a>[QS_PERF_1](#QS_PERF_1) | Usage scenario | Performance efficiency | A customer searches for or books a ride. | Normal MVP operation. | Mobile App / Frontend, Backend Monolith, MySQL Database. | The system processes the request and returns the result. | Search and booking responses should complete in less than 2 seconds under normal MVP load. |
+| <a id="QS_PERF_2"></a>[QS_PERF_2](#QS_PERF_2) | Usage scenario | Live tracking timeliness | A driver sends live GPS updates during an active ride. | Active ride with WebSocket/TLS connection. | Live Tracking, Mobile App / Frontend, Backend Monolith. | The backend receives and distributes live location and ride status updates. | Location updates should be sent approximately every 2-3 seconds during an active ride. |
+| <a id="QS_REL_1"></a>[QS_REL_1](#QS_REL_1) | Usage scenario | Payment resilience | Stripe rejects a queued payment request with a permanent payment error. | Completed ride with queued payment request. | Payment Integration, Payment Worker, Internal Payment Message Queue, Stripe Payment Provider, Persistence, Administration & Reporting. | Payment status is changed from `pending` to `failed`, the queue message is acknowledged without endless retries, and the failure is visible for operational review. | Ride status remains `completed`, payment status is `failed`, no sensitive payment data is logged, and the founding team can resolve the discrepancy. |
+| <a id="QS_REL_2"></a>[QS_REL_2](#QS_REL_2) | Usage scenario | Payment resilience | Stripe is temporarily unavailable when the payment worker processes a queued payment request. | Provider outage or network timeout. | Payment Integration, Payment Worker, Internal Payment Message Queue, Stripe Payment Provider, Persistence. | Payment request remains retryable with backoff and the same idempotency key until Stripe recovers or operational review is needed. | The customer is not double-charged, ride status is not corrupted, and the final payment status/reference is stored after recovery. |
+| <a id="QS_SEC_1"></a>[QS_SEC_1](#QS_SEC_1) | Usage scenario | Security | An unauthenticated or wrongly authorized user calls a protected backend endpoint. | Normal operation. | Backend Monolith, External Auth Provider, Nginx. | The request is rejected and no protected data is returned. | Protected REST and WebSocket/TLS endpoints require valid authentication and role-based authorization. |
+| <a id="QS_PRIV_1"></a>[QS_PRIV_1](#QS_PRIV_1) | Usage scenario | GDPR / privacy | A user profile, ride, location, payment reference, log entry, or backup contains personal data. | Normal operation and backup operation. | Backend Monolith, MySQL Database, Backup tooling, Logs. | Personal data is stored only for defined purposes, access is role-restricted, and sensitive data is not unnecessarily written to logs. | Data handling follows the GDPR-oriented governance rules from chapter 8 and backups are encrypted. |
 <br><br>
 
 # Risks and Technical Debts
@@ -907,12 +907,12 @@ development and operation.
 
 | Priority | Risk / Technical Debt | Related Decisions / Constraints | Description | Suggested Measure |
 |----------|-----------------------|---------------------------------|-------------|-------------------|
-| 1 | Monolith can become too complex | `AD_1`, `QG_3` | The modular monolith is good for the MVP, but the code base can become difficult to understand and change when features, modules, and dependencies grow. | Keep module boundaries explicit, review dependencies regularly, and avoid direct access to implementation details of other modules. |
-| 2 | Single rented server as bottleneck and single point of failure | `AD_2`, `C_1`, `C_3` | Backend, MySQL, Nginx, and production infrastructure run on one rented Linux server during the MVP. A server failure or overload can affect the whole system. | Monitor server resources, define migration triggers, keep backups off-server, and prepare a later cloud scaling path. |
-| 3 | External provider dependency for authentication, payment, and maps/routing | `AD_3`, `AD_4`, `AD_5` | youRide depends on the availability, pricing, API stability, usage limits, and terms of the external authentication provider, Stripe, and the maps/geocoding/routing provider. Provider problems can block login, delay final payment confirmation, or degrade route/ETA/geocoding-dependent booking and tracking views. | Keep provider integrations isolated, queue payment requests durably, use retries and idempotency keys where appropriate, log provider failures, monitor provider usage and costs, document fallback procedures, and store external transaction references consistently. |
-| 4 | GDPR and privacy risk for sensitive data | `C_5`, `QS_PRIV_1` | Customer profiles, driver profiles, location data, ride history, and payment references are sensitive personal data. Wrong access, excessive storage, or unsafe logs can create legal and trust problems. | Apply GDPR-oriented data governance, role-based access control, data minimization, retention/deletion rules, encrypted backups, and logging rules that avoid sensitive data. |
-| 5 | Monolithic architecture is limited for scaling | `AD_1`, `QG_3`, `QS_SCAL_1` | A monolith cannot scale individual business capabilities independently. If only live tracking, matching, or payment integration becomes heavily loaded, the whole backend must initially be scaled together. | Keep the monolith modular, monitor load by module or use case where possible, and use the cloud migration path when the rented server is no longer sufficient. |
-| 6 | Backup and restore risk | `C_3`, Deployment View | Backups are only useful if they are complete, encrypted, stored away from the production server, and restorable. Without restore tests, the team might discover backup problems too late. | Automate database and configuration backups, copy them to off-server storage, define retention, and perform regular restore tests. |
+| 1 | Monolith can become too complex | [`AD_1`](#AD_1), [`QG_3`](#QG_3) | The modular monolith is good for the MVP, but the code base can become difficult to understand and change when features, modules, and dependencies grow. | Keep module boundaries explicit, review dependencies regularly, and avoid direct access to implementation details of other modules. |
+| 2 | Single rented server as bottleneck and single point of failure | [`AD_2`](#AD_2), [`C_1`](#C_1), [`C_3`](#C_3) | Backend, MySQL, Nginx, and production infrastructure run on one rented Linux server during the MVP. A server failure or overload can affect the whole system. | Monitor server resources, define migration triggers, keep backups off-server, and prepare a later cloud scaling path. |
+| 3 | External provider dependency for authentication, payment, and maps/routing | [`AD_3`](#AD_3), [`AD_4`](#AD_4), [`AD_5`](#AD_5) | youRide depends on the availability, pricing, API stability, usage limits, and terms of the external authentication provider, Stripe, and the maps/geocoding/routing provider. Provider problems can block login, delay final payment confirmation, or degrade route/ETA/geocoding-dependent booking and tracking views. | Keep provider integrations isolated, queue payment requests durably, use retries and idempotency keys where appropriate, log provider failures, monitor provider usage and costs, document fallback procedures, and store external transaction references consistently. |
+| 4 | GDPR and privacy risk for sensitive data | [`C_5`](#C_5), [`QS_PRIV_1`](#QS_PRIV_1) | Customer profiles, driver profiles, location data, ride history, and payment references are sensitive personal data. Wrong access, excessive storage, or unsafe logs can create legal and trust problems. | Apply GDPR-oriented data governance, role-based access control, data minimization, retention/deletion rules, encrypted backups, and logging rules that avoid sensitive data. |
+| 5 | Monolithic architecture is limited for scaling | [`AD_1`](#AD_1), [`QG_3`](#QG_3), [`QS_SCAL_1`](#QS_SCAL_1) | A monolith cannot scale individual business capabilities independently. If only live tracking, matching, or payment integration becomes heavily loaded, the whole backend must initially be scaled together. | Keep the monolith modular, monitor load by module or use case where possible, and use the cloud migration path when the rented server is no longer sufficient. |
+| 6 | Backup and restore risk | [`C_3`](#C_3), Deployment View | Backups are only useful if they are complete, encrypted, stored away from the production server, and restorable. Without restore tests, the team might discover backup problems too late. | Automate database and configuration backups, copy them to off-server storage, define retention, and perform regular restore tests. |
 <br><br>
 
 # Glossary

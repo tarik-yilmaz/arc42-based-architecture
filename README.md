@@ -201,11 +201,11 @@ The current accepted architecture decisions are:
 
 | ID | Decision | Main Reason | Accepted Consequence |
 |----|----------|-------------|----------------------|
-| AD_1 | Use a modular monolith. | Fast and cost-efficient MVP delivery by a small team. | Individual capabilities cannot be scaled independently at first. |
-| AD_2 | Start on a rented Linux server and add cloud services later. | Keep initial infrastructure cost low while preserving a growth path. | The first deployment has bottleneck and availability risks. |
-| AD_3 | Use an external authentication provider. | Authentication is security-critical and expensive to implement safely. | youRide depends on provider availability, API stability, pricing, and terms. |
-| AD_4 | Use Stripe for payment execution. | Payment is business-critical, security-critical, and legally sensitive. | youRide depends on Stripe, but queueing and idempotency reduce failure impact. |
-| AD_5 | Use an external maps/geocoding/routing provider through a replaceable integration. | Map display, route distance, ETA, and geocoding are too costly to build well for the MVP. | youRide depends on provider pricing, API stability, usage limits, and privacy handling. |
+| [AD_1](./youRide-arc42.md#AD_1) | Use a modular monolith. | Fast and cost-efficient MVP delivery by a small team. | Individual capabilities cannot be scaled independently at first. |
+| [AD_2](./youRide-arc42.md#AD_2) | Start on a rented Linux server and add cloud services later. | Keep initial infrastructure cost low while preserving a growth path. | The first deployment has bottleneck and availability risks. |
+| [AD_3](./youRide-arc42.md#AD_3) | Use an external authentication provider. | Authentication is security-critical and expensive to implement safely. | youRide depends on provider availability, API stability, pricing, and terms. |
+| [AD_4](./youRide-arc42.md#AD_4) | Use Stripe for payment execution. | Payment is business-critical, security-critical, and legally sensitive. | youRide depends on Stripe, but queueing and idempotency reduce failure impact. |
+| [AD_5](./youRide-arc42.md#AD_5) | Use an external maps/geocoding/routing provider through a replaceable integration. | Map display, route distance, ETA, and geocoding are too costly to build well for the MVP. | youRide depends on provider pricing, API stability, usage limits, and privacy handling. |
 
 These decisions are connected. The modular monolith and rented-server
 deployment keep the MVP affordable. External providers reduce
